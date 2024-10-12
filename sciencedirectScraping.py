@@ -4,11 +4,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import random
-import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Set up Chrome options
 chrome_options = uc.ChromeOptions()
@@ -62,7 +57,7 @@ with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.anchor.result-list-title-link"))
             )
 
-            for index in range(0,len(articles)-1):
+            for index in range(0, len(articles)-1):
                 # Re-fetch the article links after navigating back
                 articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
                 article = articles[index]
@@ -81,12 +76,31 @@ with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
 
                     if not journal_name:
                         continue
+                    
                     # Article Title
                     article_title = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.CSS_SELECTOR, "span.title-text"))
                     ).text
 
-                    # DOI and Publication Date
+                    # DOI (Try several approaches to get the DOI)
+                    try:
+                        # First attempt: Span with anchor-text class
+                        doi_element = driver.find_element(By.CSS_SELECTOR, "span.anchor-text")
+                        doi_link = doi_element.text if doi_element else "DOI not found"
+                    except:
+                        try:
+                            # Second attempt: Check meta tag (alternative)
+                            doi_element = driver.find_element(By.CSS_SELECTOR, "meta[name='citation_doi']")
+                            doi_link = doi_element.get_attribute("content") if doi_element else "DOI not found"
+                        except:
+                            try:
+                                # Third attempt: Search inside specific div or section for DOI text
+                                doi_section = driver.find_element(By.XPATH, "//a[contains(@href, 'doi.org')]")
+                                doi_link = doi_section.get_attribute("href") if doi_section else "DOI not found"
+                            except:
+                                doi_link = "DOI not found"
+
+                    # Publication Date
                     doi_pub_date = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.CSS_SELECTOR, "div.text-xs"))
                     ).text
@@ -100,7 +114,6 @@ with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
                     affiliations_list = "\n".join([affiliation.text.replace("&amp;", "&").strip() for affiliation in affiliations])
 
                     # Abstract
-                    # Abstract
                     abstract = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located((By.CSS_SELECTOR, "div.abstract.author div[id^='d1e'] > div"))
                     ).text
@@ -112,7 +125,8 @@ with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
                     # Write to file
                     file.write(f"Nom Journal: {journal_name}\n")
                     file.write(f"Titre de l'article: {article_title}\n")
-                    file.write(f"DOI + Date de Publication: {doi_pub_date}\n")
+                    file.write(f"DOI: {doi_link}\n")
+                    file.write(f"Date de Publication: {doi_pub_date}\n")
                     file.write(f"Auteurs: {authors_list}\n")
                     file.write(f"Labos: {affiliations_list}\n")
                     file.write(f"Abstract: {abstract}\n")
@@ -131,12 +145,13 @@ with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
                     EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
                 )
 
-                # Check for the "Next" button
+            # Check for the "Next" button
             try:
-                next_button = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-aa-region='srp-pagination']"))
-                )
-                next_button.click()  # Click the "Next" button
+                next_button = driver.find_element(By.CSS_SELECTOR, "li.pagination-link.next-link a.anchor")
+                next_page_url = next_button.get_attribute("href")
+                
+                print(f"Navigating to next page: {next_page_url}")
+                driver.get(next_page_url)
                 time.sleep(random.uniform(2, 5))  # Random sleep
             except Exception as e:
                 print("No more pages to navigate.")
