@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+import json
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -69,40 +70,34 @@ def navigate_to_next_page(driver, index):
         return False
 
 def find_items(driver):
-    """Find the result items on the current page."""
+    """Find the result items on the current page and extract information."""
     try:
         elements = WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, "List-results-items"))
         )
         logging.info(f"Found {len(elements)} items on the current page.")
-        titles = []
-        for element in elements:
-            title_element = element.find_element(By.CSS_SELECTOR, "h3.text-md-md-lh a.fw-bold")
-            title_text = title_element.text.strip()
-            titles.append(title_text)
-            link = title_element.get_attribute('href')
-            print(title_text)
-            print(link)
+        articles_data = []
 
-            driver.execute_script("window.open(arguments[0], '_blank');", link)
+        for element in elements:
+            article_data = {}
+            title_element = element.find_element(By.CSS_SELECTOR, "h3.text-md-md-lh a.fw-bold")
+            article_data['Title'] = title_element.text.strip()
+            article_data['Link'] = title_element.get_attribute('href')
+
+            logging.info(f"Extracting details for article: {article_data['Title']}")
+            driver.execute_script("window.open(arguments[0], '_blank');", article_data['Link'])
             driver.switch_to.window(driver.window_handles[-1])
 
-            logging.info(f"Navigated to {link}")
-
-            abstract = extract_abstract(driver)
-            details = extract_article_details(driver)
+            article_data['Abstract'] = extract_abstract(driver)
+            article_data['Details'] = extract_article_details(driver)
             expand_authors_section(driver)
-            # authors = extract_authors(driver)
-            # for author_info in authors:
-            #     print(f"Author: {author_info['name']}")
 
-            print(abstract)
-            print(details)
-            print("---------")
+            articles_data.append(article_data)
 
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-        return elements
+
+        return articles_data
     except TimeoutException:
         logging.error("No items found on the current page.")
         return []
@@ -119,8 +114,7 @@ def extract_abstract(driver):
             logging.info("'Show More' button not found, proceeding to extract available abstract.")
 
         abstract_element = driver.find_element(By.CSS_SELECTOR, "div.abstract-desktop-div div.abstract-text")
-        abstract_text = abstract_element.text.strip()
-        return abstract_text
+        return abstract_element.text.strip()
 
     except NoSuchElementException:
         logging.error("Abstract element not found.")
@@ -176,36 +170,19 @@ def expand_authors_section(driver):
     except NoSuchElementException:
         logging.error("Authors section not found.")
 
-"""
-def extract_authors(driver):
-    authors = []
+def save_to_json(data, filename="articles_data.json"):
+    """Save data to a JSON file."""
     try:
-
-        author_elements = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.author-item span.stats-document-author-name a"))
-        )
-        logging.info(f"Found {len(author_elements)} author elements.")
-
-        for author_element in author_elements:
-            try:
-                author_name = author_element.text.strip()
-                if author_name:
-                    logging.info(f"Extracted author: {author_name}")
-                    authors.append(author_name)
-                else:
-                    logging.warning("Author information missing for one entry.")
-            except NoSuchElementException:
-                logging.warning("Failed to extract author name for one element.")
-
+        with open(filename, "w") as file:
+            json.dump(data, file, indent=4)
+        logging.info(f"Data saved to {filename}")
     except Exception as e:
-        logging.error(f"Error extracting authors: {e}")
-
-    return authors
- """
+        logging.error(f"Failed to save data to {filename}: {e}")
 
 def main():
     """Main function to run the web scraping."""
     driver = initialize_driver()
+    all_articles = []
     index = 2
     try:
         search_articles(driver, "llm")
@@ -216,6 +193,7 @@ def main():
             items = find_items(driver)
             if not items:
                 break
+            all_articles.extend(items)
 
             time.sleep(2)
             has_next = navigate_to_next_page(driver, index)
@@ -223,6 +201,7 @@ def main():
             if not has_next:
                 break
     finally:
+        save_to_json(all_articles)
         logging.info("Done")
         time.sleep(5)
         driver.quit()
