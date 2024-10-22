@@ -91,7 +91,14 @@ def find_items(driver):
             article_data['Abstract'] = extract_abstract(driver)
             article_data['Details'] = extract_article_details(driver)
             expand_authors_section(driver)
+            #authors_data = extract_authors_and_labs(driver)
+            article_data['authors_data'] = extract_authors_and_labs(driver)
 
+            expand_keywords_section(driver)
+            article_data['keywords'] = extract_keywords(driver)
+
+
+            
             articles_data.append(article_data)
 
             driver.close()
@@ -170,6 +177,39 @@ def expand_authors_section(driver):
     except NoSuchElementException:
         logging.error("Authors section not found.")
 
+def extract_authors_and_labs(driver):
+    """Extract authors and their associated lab information from the page."""
+    authors_data = []
+    
+    try:
+        # Locate the author sections
+        author_items = driver.find_elements(By.CSS_SELECTOR, "xpl-author-item")
+        
+        for item in author_items:
+            author_info = {}
+            # Extract author name
+            author_name = item.find_element(By.CSS_SELECTOR, "span").text.strip()
+            if not author_name:  # Skip if the name is empty
+                continue
+
+            author_info["name"] = author_name
+            
+            # Extract lab information
+            lab_elements = item.find_elements(By.CSS_SELECTOR, ".author-card div:nth-child(2) div")
+            labs = [lab.text.strip() for lab in lab_elements if lab.text.strip()]
+            author_info["labs"] = labs
+
+            authors_data.append(author_info)
+
+        logging.info(f"Extracted authors and labs: {authors_data}")
+        return authors_data
+
+    except NoSuchElementException:
+        logging.error("No authors found.")
+        return []
+    except Exception as e:
+        logging.error(f"Error extracting authors and labs: {e}")
+        return []
 def save_to_json(data, filename="articles_data.json"):
     """Save data to a JSON file."""
     try:
@@ -179,6 +219,56 @@ def save_to_json(data, filename="articles_data.json"):
     except Exception as e:
         logging.error(f"Failed to save data to {filename}: {e}")
 
+def expand_keywords_section(driver):
+    """Click the 'Keywords' button to expand the keywords section."""
+    try:
+        keywords_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "keywords-header"))
+        )
+        keywords_button.click()
+        logging.info("Keywords section expanded.")
+        time.sleep(2)  # Give time for the section to load
+    except NoSuchElementException:
+        logging.error("Keywords section not found.")
+    except TimeoutException:
+        logging.error("Keywords button click timed out.")
+
+def extract_keywords(driver):
+    """Extract Author and IEEE keywords from the page."""
+    keywords = {
+        "IEEE Keywords": [],
+        "Author Keywords": []
+    }
+    
+    try:
+        # Locate the container with the keywords
+        keyword_section = driver.find_elements(By.CSS_SELECTOR, "li.doc-keywords-list-item")
+        
+        # Extract Author Keywords
+        for section in keyword_section:
+            header = section.find_element(By.TAG_NAME, 'strong').text
+            if header == "Author Keywords":
+                author_keywords = section.find_elements(By.CSS_SELECTOR, "ul.List--inline li a")
+                for keyword in author_keywords:
+                    keywords["Author Keywords"].append(keyword.text.strip())
+
+            # Extract IEEE Keywords
+            elif header == "IEEE Keywords":
+                ieee_keywords = section.find_elements(By.CSS_SELECTOR, "ul.List--inline li a")
+                for keyword in ieee_keywords:
+                    keywords["IEEE Keywords"].append(keyword.text.strip())
+        
+        logging.info(f"Extracted IEEE Keywords: {keywords['IEEE Keywords']}")
+        logging.info(f"Extracted Author Keywords: {keywords['Author Keywords']}")
+        return keywords
+
+    except NoSuchElementException:
+        logging.error("Keywords not found.")
+        return keywords
+    except Exception as e:
+        logging.error(f"Error extracting keywords: {e}")
+        return keywords
+   
 def main():
     """Main function to run the web scraping."""
     driver = initialize_driver()
@@ -195,11 +285,11 @@ def main():
                 break
             all_articles.extend(items)
 
-            time.sleep(2)
-            has_next = navigate_to_next_page(driver, index)
-            index += 1
-            if not has_next:
-                break
+            #time.sleep(2)
+            #has_next = navigate_to_next_page(driver, index)
+            #index += 1
+            #if not has_next:
+            break
     finally:
         save_to_json(all_articles)
         logging.info("Done")
