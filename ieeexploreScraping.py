@@ -1,4 +1,3 @@
-import os
 import time
 import logging
 import json
@@ -15,29 +14,52 @@ from webdriver_manager.chrome import ChromeDriverManager
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def initialize_driver():
-    """Initialize the Chrome WebDriver."""
-    logging.info("Starting WebDriver")
     try:
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-        logging.info("WebDriver started successfully")
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--window-size=1920,1080')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--proxy-server="direct://"')
+        options.add_argument('--proxy-bypass-list=*')
+        options.add_argument('--start-maximized')
+        options.add_argument('--disable-infobars')
+        options.add_argument('--disable-browser-side-navigation')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-popup-blocking')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36")
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        logging.info("WebDriver initialized successfully.")
         return driver
     except WebDriverException as e:
-        logging.error(f"Error starting WebDriver: {e}")
+        logging.error(f"Error initializing WebDriver: {e}")
         return None
 
 def search_articles(driver, query):
     """Search for articles on IEEE Xplore."""
     driver.get("https://ieeexplore.ieee.org")
     logging.info(f"Navigated to {driver.current_url}")
+    
     try:
         search = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'Typeahead-input'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input.Typeahead-input[type='search']"))
         )
         search.send_keys(query)
-        search.send_keys(Keys.RETURN)
+        logging.info("Search query entered: %s", query)
+
+        search_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "button.fa-search"))
+        )
+        search_button.click()
         logging.info("Search submitted for query: %s", query)
+
     except TimeoutException:
-        logging.error("Search bar not found.")
+        driver.save_screenshot("error_screenshot.png")
+        logging.error("Search bar or button not found.")
 
 def apply_filter(driver):
     """Apply the filter for early access articles."""
@@ -287,11 +309,11 @@ def main():
                 break
             all_articles.extend(items)
 
-            #time.sleep(2)
-            #has_next = navigate_to_next_page(driver, index)
-            #index += 1
-            #if not has_next:
-            break
+            time.sleep(2)
+            has_next = navigate_to_next_page(driver, index)
+            index += 1
+            if not has_next:
+                break
     finally:
         save_to_json(all_articles)
         logging.info("Done")
