@@ -3,25 +3,27 @@ import time
 import logging
 import json
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException , WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from dotenv import load_dotenv
+from webdriver_manager.chrome import ChromeDriverManager
 
-load_dotenv()
-chrome_driver_path = os.getenv("CHROME_DRIVER_PATH")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def initialize_driver():
     """Initialize the Chrome WebDriver."""
     logging.info("Starting WebDriver")
-    service = Service(executable_path=chrome_driver_path)
-    driver = webdriver.Chrome(service=service)
-    return driver
+    try:
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        logging.info("WebDriver started successfully")
+        return driver
+    except WebDriverException as e:
+        logging.error(f"Error starting WebDriver: {e}")
+        return None
 
 def search_articles(driver, query):
     """Search for articles on IEEE Xplore."""
