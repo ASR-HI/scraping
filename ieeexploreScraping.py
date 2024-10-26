@@ -115,7 +115,7 @@ def find_items(driver):
 
             article_data['Abstract'] = extract_abstract(driver)
             article_data['Details'] = extract_article_details(driver)
-            article_data['ISSN INFO'] = extract_issn(driver)
+            article_data['issn_info'] = extract_issn(driver)
             expand_authors_section(driver)
             #authors_data = extract_authors_and_labs(driver)
             article_data['authors_data'] = extract_authors_and_labs(driver)
@@ -142,13 +142,12 @@ def extract_abstract(driver):
             logging.info("'Show More' button not found, proceeding to extract available abstract.")
 
         abstract_element = driver.find_element(By.CSS_SELECTOR, "div.abstract-desktop-div div.abstract-text")
-        return abstract_element.text.strip()
-
+        abstract_text = abstract_element.text.strip()
+        
+        cleaned_abstract = abstract_text.replace("Abstract:\n", "").replace("\n(Show Less)", "")
+        return cleaned_abstract
     except NoSuchElementException:
         logging.error("Abstract element not found.")
-        return None
-    except Exception as e:
-        logging.error(f"Error extracting abstract: {e}")
         return None
 
 def extract_article_details(driver):
@@ -327,7 +326,7 @@ def main():
     all_articles = []
     index = 2
     try:
-        search_articles(driver, "llm")
+        search_articles(driver, "ai")
         apply_filter(driver)
 
         while True:
