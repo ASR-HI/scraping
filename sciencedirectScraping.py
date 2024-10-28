@@ -3,7 +3,24 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from selenium.webdriver.common.action_chains import ActionChains
 import random
+import json
+import signal
+import sys
+
+# Set up a global variable for articles data
+articles_data = []
+
+# Function to handle cleanup on exit
+def save_data(signum, frame):
+    print("Saving collected articles data before exiting...")
+    with open("science_direct_articles.json", "w", encoding="utf-8") as json_file:
+        json.dump(articles_data, json_file, ensure_ascii=False, indent=4)
+    sys.exit(0)
+
+# Register the signal handler
+signal.signal(signal.SIGINT, save_data)
 
 # Set up Chrome options
 chrome_options = uc.ChromeOptions()
@@ -30,135 +47,197 @@ driver.get("https://www.sciencedirect.com")
 print(driver.title)
 
 # Hide WebDriver properties
-driver.execute_script("""
+driver.execute_script("""    
     Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
     Object.defineProperty(navigator, 'language', {get: () => 'en-US'});
     Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
 """)
 
-# Open a file to write the results
-with open("science_direct_articles.txt", "w", encoding="utf-8") as file:
+# Search for 'llm'
+try:
+    search = WebDriverWait(driver, 20).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
+    )
+    search.send_keys("llm")
+    time.sleep(random.uniform(3, 7))
+
+    # Click search button
+    search_button = driver.find_element(By.CLASS_NAME, "button-primary")
+    search_button.click()
+    time.sleep(random.uniform(3, 7))
+
+except Exception as e:
+    print(f"Could not search for 'llm': {e}")
+
+# Enable "Review articles" filter
+try:
+    checkbox_container = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//label[contains(@for, 'articleTypes-REV')]"))
+    )
+    driver.execute_script("arguments[0].scrollIntoView();", checkbox_container)
+    time.sleep(2)
+
+    review_checkbox = driver.find_element(By.XPATH, "//input[contains(@id, 'articleTypes-REV')]")
+    if not review_checkbox.is_selected():
+        driver.execute_script("arguments[0].click();", review_checkbox)
+        time.sleep(random.uniform(4, 8))
+        print("Enabled 'Review articles' filter using JavaScript click.")
+    else:
+        print("'Review articles' filter was already enabled.")
+except Exception as e:
+    print("Could not enable 'Review articles' filter:", e)
+
+# Enable "Open access" filter
+try:
+    checkbox_container = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//label[contains(@for, 'accessTypes-openaccess')]"))
+    )
+
+    open_checkbox = driver.find_element(By.XPATH, "//input[contains(@id, 'accessTypes-openaccess')]")
+    if not open_checkbox.is_selected():
+        driver.execute_script("arguments[0].click();", open_checkbox)
+        time.sleep(random.uniform(4, 8))
+        print("Enabled 'open access' filter using JavaScript click.")
+    else:
+        print("'open access' filter was already enabled.")
+except Exception as e:
+    print("Could not enable 'Open access' filter:", e)
+
+while True:
     try:
-        # Wait for the search input and interact with it
-        search = WebDriverWait(driver, 20).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
+        # Collect all article links on the results page
+        articles = WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.anchor.result-list-title-link"))
         )
-        search.send_keys("llm")
-        time.sleep(random.uniform(2, 5))  # Random sleep to mimic human interaction
 
-        # Click the search button
-        search_button = driver.find_element(By.CLASS_NAME, "button-primary")
-        search_button.click()
-        time.sleep(random.uniform(2, 5))  # Random sleep
+        for index in range(len(articles)):
+            articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
+            article = articles[index]
+            article_url = article.get_attribute("href")
+            print(f"Entering article: {article_url}")
+            driver.get(article_url)
 
-        while True:  # Loop through pages
-            # Collect all article links on the results page
-            articles = WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.anchor.result-list-title-link"))
-            )
+            article_data = {
+                "link": article_url,
+                "journal_name": "N/A",
+                "article_title": "N/A",
+                "doi": "N/A",
+                "publication_date": "N/A",
+                "authors": "N/A",
+                "affiliations": "N/A",
+                "abstract": "N/A",
+                "keywords": "N/A",
+            }
 
-            for index in range(0, len(articles)-1):
-                # Re-fetch the article links after navigating back
-                articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
-                article = articles[index]
-                article_url = article.get_attribute("href")
-                print(f"Entering article: {article_url}")
-                
-                # Navigate to the article page
-                driver.get(article_url)
+            try:
+                journal_name = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "publication-title"))
+                ).text
+                article_data["journal_name"] = journal_name
+            except Exception as e:
+                print(f"Could not extract journal name from {article_url}: {e}")
 
-                # Extract the required information
-                try:
-                    # Journal Name
-                    journal_name = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.ID, "publication-title"))
-                    ).text
+            try:
+                article_title = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "span.title-text"))
+                ).text
+                article_data["article_title"] = article_title
+            except Exception as e:
+                print(f"Could not extract article title from {article_url}: {e}")
 
-                    if not journal_name:
-                        continue
-                    
-                    # Article Title
-                    article_title = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "span.title-text"))
-                    ).text
+            try:
+                doi_element = WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "a.anchor.doi"))
+                )
+                doi_link = doi_element.get_attribute("href").replace("https://doi.org/", "")
+                article_data["doi"] = doi_link
+            except Exception as e:
+                print(f"Could not extract DOI from {article_url}: {e}")
 
-                    # DOI (Try several approaches to get the DOI)
-                    try:
-                        # First attempt: Span with anchor-text class
-                        doi_element = driver.find_element(By.CSS_SELECTOR, "span.anchor-text")
-                        doi_link = doi_element.text if doi_element else "DOI not found"
-                    except:
-                        try:
-                            # Second attempt: Check meta tag (alternative)
-                            doi_element = driver.find_element(By.CSS_SELECTOR, "meta[name='citation_doi']")
-                            doi_link = doi_element.get_attribute("content") if doi_element else "DOI not found"
-                        except:
-                            try:
-                                # Third attempt: Search inside specific div or section for DOI text
-                                doi_section = driver.find_element(By.XPATH, "//a[contains(@href, 'doi.org')]")
-                                doi_link = doi_section.get_attribute("href") if doi_section else "DOI not found"
-                            except:
-                                doi_link = "DOI not found"
+            try:
+                doi_pub_date = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.text-xs"))
+                ).text
+                article_data["publication_date"] = doi_pub_date
+            except Exception as e:
+                print(f"Could not extract publication date from {article_url}: {e}")
 
-                    # Publication Date
-                    doi_pub_date = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.text-xs"))
-                    ).text
+            try:
+                authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
+                authors_list = ", ".join([ 
+                    f"{author.find_element(By.CLASS_NAME, 'given-name').text} {author.find_element(By.CLASS_NAME, 'surname').text}" 
+                    for author in authors 
+                ])
+                article_data["authors"] = authors_list
+            except Exception as e:
+                print(f"Could not extract authors from {article_url}: {e}")
 
-                    # Authors
-                    authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
-                    authors_list = ", ".join([f"{author.find_element(By.CLASS_NAME, 'given-name').text} {author.find_element(By.CLASS_NAME, 'surname').text}" for author in authors])
+            try:
+                # Wait for the "Show more" button to be clickable and click it
+                show_more_button = WebDriverWait(driver, 15).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "#show-more-btn"))
+                )
+                show_more_button.click()
 
-                    # Affiliations (Labs)
-                    affiliations = driver.find_elements(By.CSS_SELECTOR, "dl.affiliation dd")
-                    affiliations_list = "\n".join([affiliation.text.replace("&amp;", "&").strip() for affiliation in affiliations])
-
-                    # Abstract
-                    abstract = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.abstract.author div[id^='d1e'] > div"))
-                    ).text
-
-                    # Keywords
-                    keywords = driver.find_elements(By.CLASS_NAME, "keyword")
-                    keywords_list = ", ".join([keyword.text for keyword in keywords])
-
-                    # Write to file
-                    file.write(f"Nom Journal: {journal_name}\n")
-                    file.write(f"Titre de l'article: {article_title}\n")
-                    file.write(f"DOI: {doi_link}\n")
-                    file.write(f"Date de Publication: {doi_pub_date}\n")
-                    file.write(f"Auteurs: {authors_list}\n")
-                    file.write(f"Labos: {affiliations_list}\n")
-                    file.write(f"Abstract: {abstract}\n")
-                    file.write(f"Mots-clés: {keywords_list}\n")
-                    file.write("\n" + "-" * 50 + "\n\n")  # Separator between articles
-
-                except Exception as e:
-                    print(f"Could not extract information from {article_url}: {e}")
-
-                # Go back to the search results page
-                driver.back()
-                time.sleep(random.uniform(2, 5))  # Wait before going to the next article
-
-                # Wait for the search results to be visible again
-                WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
+                # Wait for the affiliations to be loaded after clicking the button
+                WebDriverWait(driver, 15).until(
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, "dl.affiliation dd"))
                 )
 
-            # Check for the "Next" button
-            try:
-                next_button = driver.find_element(By.CSS_SELECTOR, "li.pagination-link.next-link a.anchor")
-                next_page_url = next_button.get_attribute("href")
-                
-                print(f"Navigating to next page: {next_page_url}")
-                driver.get(next_page_url)
-                time.sleep(random.uniform(2, 5))  # Random sleep
+                # Extract affiliations
+                affiliations = driver.find_elements(By.CSS_SELECTOR, "dl.affiliation dd")
+                affiliations_list = "\n".join([affiliation.text.replace("&amp;", "&").strip() for affiliation in affiliations])
+                article_data["affiliations"] = affiliations_list
+
             except Exception as e:
-                print("No more pages to navigate.")
-                break  # Break the loop if there are no more pages
+                print(f"Could not extract affiliations from {article_url}: {e}")
+
+            try:
+                # Wait for the abstract section to be present
+                WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, ".abstract.author"))
+                )
+                abstract_section = driver.find_element(By.CSS_SELECTOR, ".abstract.author")
+                abstract_text_div = abstract_section.find_element(By.CSS_SELECTOR, ".u-margin-s-bottom")
+                abstract = abstract_text_div.text if abstract_text_div else "N/A"
+                article_data["abstract"] = abstract
+            except Exception as e:
+                print(f"Could not extract abstract from {article_url}: {e}")
+
+            try:
+                keywords = driver.find_elements(By.CLASS_NAME, "keyword")
+                keywords_list = ", ".join([keyword.text for keyword in keywords])
+                article_data["keywords"] = keywords_list
+            except Exception as e:
+                print(f"Could not extract keywords from {article_url}: {e}")
+
+            # Append the article data to the articles list
+            articles_data.append(article_data)
+
+            # Go back to the results page
+            driver.back()
+            time.sleep(random.uniform(10,15))  # Wait before going to the next article
+
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
+            )
+
+        # Go to the next page
+        try:
+            next_button = driver.find_element(By.CSS_SELECTOR, "li.pagination-link.next-link a.anchor")
+            next_page_url = next_button.get_attribute("href")
+            print(f"Going to the next page: {next_page_url}")
+            driver.get(next_page_url)
+            time.sleep(random.uniform(4, 8))
+        except Exception as e:
+            print("No more pages to navigate.")
+            break
 
     except Exception as e:
-        print(f"Error occurred: {e}")
+        print(f"An error occurred: {e}")
+        break
 
-time.sleep(600)
+# Final save to ensure all collected data is saved
+save_data(None, None)
+
 driver.quit()
