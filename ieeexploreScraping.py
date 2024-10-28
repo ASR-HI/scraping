@@ -1,41 +1,66 @@
-import os
 import time
 import logging
 import json
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException , WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from dotenv import load_dotenv
+from webdriver_manager.chrome import ChromeDriverManager
 
-load_dotenv()
-chrome_driver_path = os.getenv("CHROME_DRIVER_PATH")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def initialize_driver():
-    """Initialize the Chrome WebDriver."""
-    logging.info("Starting WebDriver")
-    service = Service(executable_path=chrome_driver_path)
-    driver = webdriver.Chrome(service=service)
-    return driver
+    try:
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-gpu')
+        options.add_argument("--disable-webgl") 
+        options.add_argument('--start-maximized')
+        options.add_argument('--disable-infobars')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--proxy-bypass-list=*')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--window-size=1920,1080')
+        options.add_argument('--disable-notifications')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-popup-blocking')
+        options.add_argument('--proxy-server="direct://"')
+        options.add_argument('--disable-browser-side-navigation')
+        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36")
+        
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        logging.info("WebDriver initialized successfully.")
+        return driver
+    except WebDriverException as e:
+        logging.error(f"Error initializing WebDriver: {e}")
+        return None
 
 def search_articles(driver, query):
     """Search for articles on IEEE Xplore."""
     driver.get("https://ieeexplore.ieee.org")
     logging.info(f"Navigated to {driver.current_url}")
+    
     try:
         search = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'Typeahead-input'))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input.Typeahead-input[type='search']"))
         )
         search.send_keys(query)
-        search.send_keys(Keys.RETURN)
+        logging.info("Search query entered: %s", query)
+
+        search_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "button.fa-search"))
+        )
+        search_button.click()
         logging.info("Search submitted for query: %s", query)
+
     except TimeoutException:
-        logging.error("Search bar not found.")
+        driver.save_screenshot("error_screenshot.png")
+        logging.error("Search bar or button not found.")
 
 def apply_filter(driver):
     """Apply the filter for early access articles."""
@@ -90,17 +115,13 @@ def find_items(driver):
 
             article_data['Abstract'] = extract_abstract(driver)
             article_data['Details'] = extract_article_details(driver)
+            article_data['issn_info'] = extract_issn(driver)
             expand_authors_section(driver)
             #authors_data = extract_authors_and_labs(driver)
             article_data['authors_data'] = extract_authors_and_labs(driver)
-
             expand_keywords_section(driver)
-            article_data['keywords'] = extract_keywords(driver)
-
-
-            
+            article_data['keywords'] = extract_keywords(driver)            
             articles_data.append(article_data)
-
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
 
@@ -121,13 +142,12 @@ def extract_abstract(driver):
             logging.info("'Show More' button not found, proceeding to extract available abstract.")
 
         abstract_element = driver.find_element(By.CSS_SELECTOR, "div.abstract-desktop-div div.abstract-text")
-        return abstract_element.text.strip()
-
+        abstract_text = abstract_element.text.strip()
+        
+        cleaned_abstract = abstract_text.replace("Abstract:\n", "").replace("\n(Show Less)", "")
+        return cleaned_abstract
     except NoSuchElementException:
         logging.error("Abstract element not found.")
-        return None
-    except Exception as e:
-        logging.error(f"Error extracting abstract: {e}")
         return None
 
 def extract_article_details(driver):
@@ -268,14 +288,45 @@ def extract_keywords(driver):
     except Exception as e:
         logging.error(f"Error extracting keywords: {e}")
         return keywords
-   
+
+def extract_issn(driver):
+    """Extract ISSN information from the article's detail page."""
+    issn_data = {}
+
+    try:
+        electronic_issn_element = driver.find_element(By.XPATH, "//strong[contains(text(), 'Electronic ISSN:')]/parent::div")
+        issn_data['Electronic ISSN'] = electronic_issn_element.text.split(":")[-1].strip()
+        logging.info(f"Electronic ISSN extracted: {issn_data['Electronic ISSN']}")
+    except NoSuchElementException:
+        logging.info("Direct Electronic ISSN not found, checking for collapsible ISSN section.")
+
+    try:
+        issn_toggle_button = driver.find_element(By.XPATH, "//h2[contains(text(), 'ISSN Information:')]")
+        if "fa-angle-down" in issn_toggle_button.find_element(By.TAG_NAME, "i").get_attribute("class"):
+            issn_toggle_button.click()
+            time.sleep(2)
+            logging.info("Clicked to expand the ISSN section.")
+        
+        issn_elements = driver.find_elements(By.CSS_SELECTOR, "div.abstract-metadata-indent div")
+        for element in issn_elements:
+            if "Electronic ISSN:" in element.text:
+                issn_data['Electronic ISSN'] = element.text.split(":")[-1].strip()
+            elif "Print ISSN:" in element.text:
+                issn_data['Print ISSN'] = element.text.split(":")[-1].strip()
+        
+        logging.info(f"ISSN data extracted: {issn_data}")
+    except NoSuchElementException:
+        logging.error("ISSN information not found.")
+    
+    return issn_data
+ 
 def main():
     """Main function to run the web scraping."""
     driver = initialize_driver()
     all_articles = []
     index = 2
     try:
-        search_articles(driver, "llm")
+        search_articles(driver, "ai")
         apply_filter(driver)
 
         while True:
@@ -285,11 +336,11 @@ def main():
                 break
             all_articles.extend(items)
 
-            #time.sleep(2)
-            #has_next = navigate_to_next_page(driver, index)
-            #index += 1
-            #if not has_next:
-            break
+            time.sleep(2)
+            has_next = navigate_to_next_page(driver, index)
+            index += 1
+            if not has_next:
+                break
     finally:
         save_to_json(all_articles)
         logging.info("Done")
