@@ -11,6 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import argparse
 import re
+from testBD import save_to_mongodb 
+
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -361,7 +363,9 @@ def main():
         save_to_json(all_articles, filename)
         logging.info("Done")
         time.sleep(5)
+        save_to_mongodb(all_articles , "ieee")
         driver.quit()
+
 
 if __name__ == "__main__":
     main()

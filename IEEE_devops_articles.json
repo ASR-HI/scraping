@@ -1,0 +1,264 @@
+[
+    {
+        "Title": "The Future of Software Development With GenAI: Evolving Roles of Software Personas",
+        "Link": "https://ieeexplore.ieee.org/document/10669013/",
+        "Abstract": "Recent advancements in Generative AI (GenAI) algorithms have been reshaping the Software Development Lifecycle (SDLC) landscape. These transformations not only enhance the speed, accuracy, and productivity of SDLC tasks but also influence the roles and existence of software personas within the SDLC ecosystem. This study evaluates GenAI's effects on the roles of software personas engaged in the typical SDLC phases: planning, design, development, testing, and deployment. When evaluating these effects, it becomes evident that GenAI's impact varies across roles and their relation to specific SDLC phases and activities. While some roles experience a substantial impact, achieving full AI-driven automation remains a challenge for roles that demand critical thinking, empathy, and other human supervision. Overall, GenAI's penetration will necessitate new skills and a redefinition of roles for many tasks within SDLC, where humans and AI will collaborate to create better, faster, and more efficient software.",
+        "Details": {
+            "DOI": "10.1109/EMR.2024.3454112",
+            "Date of Publication": "06 September 2024",
+            "Publisher": "IEEE",
+            "Published In": "IEEE Engineering Management Review"
+        },
+        "issn_info": {
+            "Print ISSN": "0360-8581",
+            "Electronic ISSN": "1937-4178"
+        },
+        "authors_data": [
+            {
+                "name": "Tolga \u015eim\u015fek",
+                "labs": [
+                    "Siemens AS, Kartal R&D Center, Istanbul, T\u00fcrkiye"
+                ]
+            },
+            {
+                "name": "\u00c7a\u011flar G\u00fcl\u015feni",
+                "labs": [
+                    "T\u00fcrkiye \u0130\u015f Bankas\u0131 Artificial Intelligence Department, Istanbul, T\u00fcrkiye"
+                ]
+            },
+            {
+                "name": "Gokcen Arkali Olcay",
+                "labs": [
+                    "Department of Business Administration, University of Wisconsin Green Bay, Green Bay, WI, USA"
+                ]
+            }
+        ],
+        "keywords": {
+            "IEEE Keywords": [
+                "Software",
+                "Artificial intelligence",
+                "Business",
+                "DevOps",
+                "Software algorithms",
+                "Testing",
+                "Planning"
+            ],
+            "Author Keywords": [
+                "AI",
+                "genai",
+                "roles",
+                "SDLC",
+                "skills",
+                "software personas"
+            ]
+        }
+    },
+    {
+        "Title": "Quantitative DevSecOps Metrics for Cloud-Based Web Microservices",
+        "Link": "https://ieeexplore.ieee.org/document/10735195/",
+        "Abstract": "The widespread adoption of Cloud-Based Web Microservices (CBWMs) and DevSecOps (Development, Security, and Operations) methodologies has significantly improved modern software development, particularly regarding scalability, agility, and security. However, the true success of these implementations hinges on the ability to measure their effectiveness accurately. Metrics serve as a critical tool in this process, providing quantifiable data on service performance, security, and operational efficiency. By leveraging these metrics, organizations can better assess the efficiency of their DevSecOps practices, making them invaluable for informed decision-making, trend analysis, process management, and continuous improvement. This paper introduces 12 key quantitative metrics specifically designed to evaluate the quality of CBWMs developed through DevSecOps practices. These metrics were identified using a Multi-Vocal Literature Reviewmethodology, sourcing information from 92 relevant studies (2018-2023) on IEEE Xplore, Springer, and Google Scholar. The selected metrics are widely applicable across CBWMs and are easy to measure with existing tools, offering a comprehensive framework for thorough assessment.",
+        "Details": {
+            "DOI": "10.1109/ACCESS.2024.3486314",
+            "Date of Publication": "25 October 2024",
+            "Publisher": "IEEE",
+            "Published In": "IEEE Access"
+        },
+        "issn_info": {
+            "Electronic ISSN": "2169-3536"
+        },
+        "authors_data": [
+            {
+                "name": "Jin Yu Zhang",
+                "labs": [
+                    "Boston University, Boston, MA, USA"
+                ]
+            },
+            {
+                "name": "Yuting Zhang",
+                "labs": [
+                    "Boston University, Boston, MA, USA"
+                ]
+            }
+        ],
+        "keywords": {
+            "IEEE Keywords": [
+                "Security",
+                "Measurement",
+                "Microservice architectures",
+                "DevOps",
+                "Software",
+                "Organizations",
+                "Codes",
+                "Cloud computing",
+                "Automation",
+                "Pipelines"
+            ],
+            "Author Keywords": [
+                "Cloud",
+                "DevSecOps",
+                "metrics",
+                "microservices",
+                "web"
+            ]
+        }
+    },
+    {
+        "Title": "Using Full-dimensional Programmability to Power Self-driving 6G Networks",
+        "Link": "https://ieeexplore.ieee.org/document/10643552/",
+        "Abstract": "Recently, 6G has attracted widespread attention from both academia and industry. 6G networks are expected to exhibit even more heterogeneity than 5G networks, and support various emerging scenarios and applications such as virtual and augmented reality (VR/AR), air/space/ground networks, and Internet of Things. Such massive heterogeneous devices pose huge challenges for network control and management. Recently, advances in artificial intelligence have brought to a new clan of networks, termed as self-driving 6G networks. It utilizes network telemetry, artificial intelligence, and DevOps to simplify networks and operations, helping network owners improve network quality, as well as increase efficiency. However, the current network is built on closed merchant switching ASICs and a homegrown management and control system. Self-driving an opaque system without really knowing and controlling what they do is a hazardous and fruitless endeavor. Fortunately, the network programmability technology opens the possibility for running self-driving algorithms over the whole network. In this paper, we design a full-dimensional programmability empowered self-driving 6G network architecture. We discuss how network programmability can promote the release of network intelligence, from the view of both verticality (control and data plane) and horizontality (end to end). Moreover, three use cases are designed to demonstrate that the proposed architecture can automatically cope with the dynamically changing complex network environment, realize automatic perception and automatic decision, and then facilitate the automation level of the network and enhance the performance of the network.",
+        "Details": {
+            "DOI": "10.1109/MNET.2024.3448288",
+            "Date of Publication": "22 August 2024",
+            "Publisher": "IEEE",
+            "Published In": "IEEE Network"
+        },
+        "issn_info": {
+            "Print ISSN": "0890-8044",
+            "Electronic ISSN": "1558-156X"
+        },
+        "authors_data": [
+            {
+                "name": "Tong Wu",
+                "labs": [
+                    "State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications, Beijing, China"
+                ]
+            },
+            {
+                "name": "Haipeng Yao",
+                "labs": [
+                    "State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications, Beijing, China"
+                ]
+            },
+            {
+                "name": "Tianle Mai",
+                "labs": [
+                    "State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications, Beijing, China"
+                ]
+            },
+            {
+                "name": "Zunliang Wang",
+                "labs": [
+                    "State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications, Beijing, China"
+                ]
+            },
+            {
+                "name": "Fu Wang",
+                "labs": [
+                    "School of Electronic Engineering, Beijing University of Posts and Telecommunications, Beijing, China"
+                ]
+            },
+            {
+                "name": "Mohsen Guizani",
+                "labs": [
+                    "Machine Learning Department, Mohamed bin Zayed University of Artificial Intelligence (MBZUAI), UAE"
+                ]
+            }
+        ],
+        "keywords": {
+            "IEEE Keywords": [
+                "6G mobile communication",
+                "Switches",
+                "Computer architecture",
+                "Control systems",
+                "Artificial intelligence",
+                "Telemetry",
+                "Network architecture"
+            ],
+            "Author Keywords": [
+                "6G",
+                "Programmable Network",
+                "Self-driving Network",
+                "Network Control"
+            ]
+        }
+    },
+    {
+        "Title": "Monza: An Energy-Minimal, General-Purpose Dataflow SoC for the Internet of Things",
+        "Link": "https://ieeexplore.ieee.org/document/10608171/",
+        "Abstract": "This paper describes the design and implementation of Monza , a testchip SoC featuring Efficient Computer Company\u2019s Fabric processor. The Fabric is a general-purpose, spatial-dataflow architecture and compiler designed to minimize energy. The Fabric offers a unique combination of familiar software DevOps and extreme efficiency. Monza includes a small Fabric, a RISCV core, 1MB SRAM, digital I/O, and integrated clock generation and power conversion. Monza is implemented in 22nm FD-SOI process and was taped out in Q4\u201923. Signoff timing and power simulations estimate up to 550 GOPS/W @ 310 \u03bcW on a dense convolution kernel written in C.",
+        "Details": {
+            "DOI": "10.1109/MM.2024.3426611",
+            "Date of Publication": "24 July 2024",
+            "Publisher": "IEEE",
+            "Published In": "IEEE Micro"
+        },
+        "issn_info": {
+            "Print ISSN": "0272-1732",
+            "Electronic ISSN": "1937-4143"
+        },
+        "authors_data": [
+            {
+                "name": "Nathan Beckmann",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Brandon Lucia",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Graham Gobieski",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Tony Nowatzki",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Thomas Jackson",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Gu\u00e9nol\u00e9 Lallement",
+                "labs": [
+                    "Efficient Computer, New York City, NY, USA"
+                ]
+            },
+            {
+                "name": "Keyi Zhang",
+                "labs": [
+                    "Efficient Computer, Santa Clara, CA, USA"
+                ]
+            },
+            {
+                "name": "Amolak Nagi",
+                "labs": [
+                    "Efficient Computer, Santa Clara, CA, USA"
+                ]
+            },
+            {
+                "name": "Atharv Sathe",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            },
+            {
+                "name": "Harsh Desai",
+                "labs": [
+                    "Efficient Computer, Pittsburgh, PA, USA"
+                ]
+            }
+        ],
+        "keywords": {
+            "IEEE Keywords": [
+                "Fabrics",
+                "Internet of Things",
+                "Standards",
+                "Hardware",
+                "Energy efficiency",
+                "Codes",
+                "Pipelines"
+            ],
+            "Author Keywords": []
+        }
+    }
+]

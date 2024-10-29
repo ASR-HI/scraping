@@ -10,6 +10,10 @@ import signal
 import sys
 import argparse
 import logging
+from testBD import save_to_mongodb 
+
+
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Set up a global variable for articles data
@@ -238,5 +242,8 @@ while True:
 
 # Final save to ensure all collected data is saved
 save_data(args.query)
+save_to_mongodb(articles_data, "sciencedirect")
+
+
 
 driver.quit()
