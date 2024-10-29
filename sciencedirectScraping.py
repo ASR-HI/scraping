@@ -8,19 +8,30 @@ import random
 import json
 import signal
 import sys
+import argparse
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Set up a global variable for articles data
 articles_data = []
 
 # Function to handle cleanup on exit
-def save_data(signum, frame):
-    print("Saving collected articles data before exiting...")
-    with open("science_direct_articles.json", "w", encoding="utf-8") as json_file:
+def save_data(query, signum=None, frame=None):
+    logging.info("Saving collected articles data before exiting...")
+    # Create a filename based on the query
+    safe_query = query.replace(" ", "_")
+    filename = f"ScienceDirect_{safe_query}_articles.json"
+    with open(filename, "w", encoding="utf-8") as json_file:
         json.dump(articles_data, json_file, ensure_ascii=False, indent=4)
     sys.exit(0)
 
 # Register the signal handler
-signal.signal(signal.SIGINT, save_data)
+signal.signal(signal.SIGINT, lambda signum, frame: save_data(args.query, signum, frame))
+
+# Set up argument parser for query
+parser = argparse.ArgumentParser(description="Scrape ScienceDirect articles based on a research topic.")
+parser.add_argument("--query", type=str, required=True, help="Research topic to search for.")
+args = parser.parse_args()
 
 # Set up Chrome options
 chrome_options = uc.ChromeOptions()
@@ -34,7 +45,11 @@ chrome_options.add_argument("--disable-webgl")
 chrome_options.add_argument("--disable-application-cache")
 
 # Initialize undetected Chrome driver
-driver = uc.Chrome(options=chrome_options)
+try:
+    driver = uc.Chrome(options=chrome_options)
+except Exception as e:
+    logging.error(f"Failed to initialize the Chrome driver: {e}")
+    sys.exit(1)
 
 # Random window size
 width = random.randint(800, 1200)
@@ -42,9 +57,9 @@ height = random.randint(600, 800)
 driver.set_window_size(width, height)
 driver.set_window_position(random.randint(0, 100), random.randint(0, 100))
 
-print("Starting Chrome...")
+logging.info("Starting Chrome...")
 driver.get("https://www.sciencedirect.com")
-print(driver.title)
+logging.info(driver.title)
 
 # Hide WebDriver properties
 driver.execute_script("""    
@@ -53,12 +68,12 @@ driver.execute_script("""
     Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
 """)
 
-# Search for 'llm'
+# Search for the provided query
 try:
     search = WebDriverWait(driver, 20).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
     )
-    search.send_keys("llm")
+    search.send_keys(args.query)
     time.sleep(random.uniform(3, 7))
 
     # Click search button
@@ -67,7 +82,7 @@ try:
     time.sleep(random.uniform(3, 7))
 
 except Exception as e:
-    print(f"Could not search for 'llm': {e}")
+    logging.error(f"Could not search for '{args.query}': {e}")
 
 # Enable "Review articles" filter
 try:
@@ -81,11 +96,11 @@ try:
     if not review_checkbox.is_selected():
         driver.execute_script("arguments[0].click();", review_checkbox)
         time.sleep(random.uniform(4, 8))
-        print("Enabled 'Review articles' filter using JavaScript click.")
+        logging.info("Enabled 'Review articles' filter using JavaScript click.")
     else:
-        print("'Review articles' filter was already enabled.")
+        logging.info("'Review articles' filter was already enabled.")
 except Exception as e:
-    print("Could not enable 'Review articles' filter:", e)
+    logging.error("Could not enable 'Review articles' filter:", e)
 
 # Enable "Open access" filter
 try:
@@ -97,11 +112,11 @@ try:
     if not open_checkbox.is_selected():
         driver.execute_script("arguments[0].click();", open_checkbox)
         time.sleep(random.uniform(4, 8))
-        print("Enabled 'open access' filter using JavaScript click.")
+        logging.info("Enabled 'open access' filter using JavaScript click.")
     else:
-        print("'open access' filter was already enabled.")
+        logging.info("'open access' filter was already enabled.")
 except Exception as e:
-    print("Could not enable 'Open access' filter:", e)
+    logging.error("Could not enable 'Open access' filter:", e)
 
 while True:
     try:
@@ -114,7 +129,7 @@ while True:
             articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
             article = articles[index]
             article_url = article.get_attribute("href")
-            print(f"Entering article: {article_url}")
+            logging.info(f"Entering article: {article_url}")
             driver.get(article_url)
 
             article_data = {
@@ -135,7 +150,7 @@ while True:
                 ).text
                 article_data["journal_name"] = journal_name
             except Exception as e:
-                print(f"Could not extract journal name from {article_url}: {e}")
+                logging.error(f"Could not extract journal name from {article_url}: {e}")
 
             try:
                 article_title = WebDriverWait(driver, 10).until(
@@ -143,7 +158,7 @@ while True:
                 ).text
                 article_data["article_title"] = article_title
             except Exception as e:
-                print(f"Could not extract article title from {article_url}: {e}")
+                logging.error(f"Could not extract article title from {article_url}: {e}")
 
             try:
                 doi_element = WebDriverWait(driver, 15).until(
@@ -152,7 +167,7 @@ while True:
                 doi_link = doi_element.get_attribute("href").replace("https://doi.org/", "")
                 article_data["doi"] = doi_link
             except Exception as e:
-                print(f"Could not extract DOI from {article_url}: {e}")
+                logging.error(f"Could not extract DOI from {article_url}: {e}")
 
             try:
                 doi_pub_date = WebDriverWait(driver, 10).until(
@@ -160,7 +175,7 @@ while True:
                 ).text
                 article_data["publication_date"] = doi_pub_date
             except Exception as e:
-                print(f"Could not extract publication date from {article_url}: {e}")
+                logging.error(f"Could not extract publication date from {article_url}: {e}")
 
             try:
                 authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
@@ -170,7 +185,7 @@ while True:
                 ])
                 article_data["authors"] = authors_list
             except Exception as e:
-                print(f"Could not extract authors from {article_url}: {e}")
+                logging.error(f"Could not extract authors from {article_url}: {e}")
 
             try:
                 # Wait for the "Show more" button to be clickable and click it
@@ -190,7 +205,7 @@ while True:
                 article_data["affiliations"] = affiliations_list
 
             except Exception as e:
-                print(f"Could not extract affiliations from {article_url}: {e}")
+                logging.error(f"Could not extract affiliations from {article_url}: {e}")
 
             try:
                 # Wait for the abstract section to be present
@@ -202,42 +217,26 @@ while True:
                 abstract = abstract_text_div.text if abstract_text_div else "N/A"
                 article_data["abstract"] = abstract
             except Exception as e:
-                print(f"Could not extract abstract from {article_url}: {e}")
+                logging.error(f"Could not extract abstract from {article_url}: {e}")
 
             try:
                 keywords = driver.find_elements(By.CLASS_NAME, "keyword")
                 keywords_list = ", ".join([keyword.text for keyword in keywords])
                 article_data["keywords"] = keywords_list
             except Exception as e:
-                print(f"Could not extract keywords from {article_url}: {e}")
+                logging.error(f"Could not extract keywords from {article_url}: {e}")
 
             # Append the article data to the articles list
             articles_data.append(article_data)
 
-            # Go back to the results page
+            # Go back to the search results
             driver.back()
-            time.sleep(random.uniform(10,15))  # Wait before going to the next article
-
-            WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, "input[id='qs']"))
-            )
-
-        # Go to the next page
-        try:
-            next_button = driver.find_element(By.CSS_SELECTOR, "li.pagination-link.next-link a.anchor")
-            next_page_url = next_button.get_attribute("href")
-            print(f"Going to the next page: {next_page_url}")
-            driver.get(next_page_url)
-            time.sleep(random.uniform(4, 8))
-        except Exception as e:
-            print("No more pages to navigate.")
-            break
-
+            time.sleep(random.uniform(2, 4))
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"Error during scraping articles: {e}")
         break
 
 # Final save to ensure all collected data is saved
-save_data(None, None)
+save_data(args.query)
 
 driver.quit()
