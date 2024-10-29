@@ -9,6 +9,8 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+import argparse
+import re
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,7 +26,6 @@ def initialize_driver():
         options.add_argument('--disable-infobars')
         options.add_argument('--disable-extensions')
         options.add_argument('--proxy-bypass-list=*')
-        options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--window-size=1920,1080')
         options.add_argument('--disable-notifications')
         options.add_argument('--disable-dev-shm-usage')
@@ -230,7 +231,8 @@ def extract_authors_and_labs(driver):
     except Exception as e:
         logging.error(f"Error extracting authors and labs: {e}")
         return []
-def save_to_json(data, filename="articles_data.json"):
+
+def save_to_json(data, filename="ieee_articles_data.json"):
     """Save data to a JSON file."""
     try:
         with open(filename, "w") as file:
@@ -319,14 +321,26 @@ def extract_issn(driver):
         logging.error("ISSN information not found.")
     
     return issn_data
+
+def sanitize_filename(query):
+    """Sanitize the search query to create a valid filename."""
+    sanitized_query = re.sub(r'\W+', '_', query)
+    return sanitized_query
  
 def main():
-    """Main function to run the web scraping."""
+    parser = argparse.ArgumentParser(description="Scrape IEEE Xplore articles based on a search query.")
+    parser.add_argument("-q", "--query", required=True, help="Search query for IEEE Xplore.")
+    args = parser.parse_args()
+
     driver = initialize_driver()
+    if driver is None:
+        logging.error("Failed to initialize WebDriver. Exiting.")
+        return
+    
     all_articles = []
     index = 2
     try:
-        search_articles(driver, "ai")
+        search_articles(driver, args.query)
         apply_filter(driver)
 
         while True:
@@ -342,7 +356,9 @@ def main():
             if not has_next:
                 break
     finally:
-        save_to_json(all_articles)
+        sanitized_query = sanitize_filename(args.query)
+        filename = f"IEEE_{sanitized_query}_articles.json"
+        save_to_json(all_articles, filename)
         logging.info("Done")
         time.sleep(5)
         driver.quit()
