@@ -9,7 +9,7 @@ import time
 import os
 
 # Charger les données du fichier JSON avec un encodage spécifique
-with open('science_direct_articles.json', 'r', encoding='utf-8') as file:
+with open('scraping/ieee_output[1].json', 'r', encoding='utf-8') as file:
     articles = json.load(file)
 
 # Initialiser le driver
@@ -91,19 +91,19 @@ def scrape_journal_data(journal_name):
 
 # Boucle à travers chaque article et scraper les données
 for article in articles:
-    journal_name = article['journal_name']
+    journal_name = article['Details']['Published In']
     print(f"Traitement du journal: {journal_name}")
     scrape_journal_data(journal_name)
 
     # Sauvegarder l'état après chaque journal traité
-    with open('journals_data.json', 'w', encoding='utf-8') as json_file:
+    with open('journaux.json', 'w', encoding='utf-8') as json_file:
         json.dump(all_journal_data, json_file, ensure_ascii=False, indent=4)
 
 # Exporter les données au format JSON final
-with open('journals_data.json', 'w', encoding='utf-8') as json_file:
+with open('journaux.json', 'w', encoding='utf-8') as json_file:
     json.dump(all_journal_data, json_file, ensure_ascii=False, indent=4)
 
-print("Les données de tous les journaux ont été enregistrées dans 'journals_data.json'.")
+print("Les données de tous les journaux ont été enregistrées dans 'journaux.json'.")
 
 # Fermer le navigateur
 driver.quit()
