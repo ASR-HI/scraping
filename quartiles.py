@@ -9,7 +9,7 @@ import time
 import os
 
 # Charger les données du fichier JSON avec un encodage spécifique
-with open('scraping/ieee_output[1].json', 'r', encoding='utf-8') as file:
+with open('ieee_output[1].json', 'r', encoding='utf-8') as file:
     articles = json.load(file)
 
 # Initialiser le driver
@@ -75,11 +75,19 @@ def scrape_journal_data(journal_name):
         except Exception as e:
             print(f"Erreur lors de la récupération des ISSN pour '{journal_name}': {e}")
             issn_text = "N/A"
+            # Récupérer le pays
+        try:
+                country_div = driver.find_element(By.XPATH, "//h2[text()='Country']/following-sibling::p/a[1]")
+                country_text = country_div.text.strip()
+        except Exception as e:
+                print(f"Erreur lors de la récupération du pays pour '{journal_name}': {e}")
+                country_text = "N/A"
 
         # Créer un dictionnaire pour le journal
         journal_data = {
             "Journal Name": journal_name,
             "ISSN": issn_text,
+            "Country": country_text,
             "Data": data
         }
 
