@@ -1,7 +1,7 @@
 import subprocess
 
 query_terms = ["devops","Multimodal llm","llm","blockchain"]
-scripts = ["ieeexploreScraping.py", "sciencedirectScraping.py"]
+scripts = ["sciencedirectScraping.py"]
 processes = []
 
 for query in query_terms:

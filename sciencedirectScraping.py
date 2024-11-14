@@ -104,6 +104,22 @@ try:
 except Exception as e:
     logging.error("Could not enable 'Review articles' filter:", e)
 
+# Enable "Research articles" filter
+try:
+    checkbox_container = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//label[contains(@for, 'articleTypes-FLA')]"))
+    )
+
+    research_checkbox = driver.find_element(By.XPATH, "//input[contains(@id, 'articleTypes-FLA')]")
+    if not research_checkbox.is_selected():
+        driver.execute_script("arguments[0].click();", research_checkbox)
+        time.sleep(random.uniform(4, 8))
+        logging.info("Enabled 'Research articles' filter using JavaScript click.")
+    else:
+        logging.info("'Research articles' filter was already enabled.")
+except Exception as e:
+    logging.error("Could not enable 'Research articles' filter:", e)
+
 # Enable "Open access" filter
 try:
     checkbox_container = WebDriverWait(driver, 10).until(
