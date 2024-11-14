@@ -138,131 +138,124 @@ except Exception as e:
 
 while True:
     try:
-        # Collect all article links on the results page
-        articles = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.anchor.result-list-title-link"))
-        )
+        # Collect the links for the articles at each page or iteration
+        def get_articles():
+            articles = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a.anchor.result-list-title-link"))
+            )
+            # Print all the articles
+            print(articles)
 
-        for index in range(len(articles)):
-            articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
-            article = articles[index]
-            article_url = article.get_attribute("href")
-            logging.info(f"Entering article: {article_url}")
-            driver.get(article_url)
+            return articles
 
-            article_data = {
-                "link": article_url,
-                "journal_name": "N/A",
-                "article_title": "N/A",
-                "doi": "N/A",
-                "publication_date": "N/A",
-                "abstract": "N/A",
-                "keywords": "N/A",
-                "authors_data": []
-            }
+        # Check on each page
+        articles = get_articles()
 
+        for index in range( len(articles)):  # The count will be started from 13
             try:
-                journal_name = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "publication-title"))
-                ).text
-                article_data["journal_name"] = journal_name
-            except Exception as e:
-                logging.error(f"Could not extract journal name from {article_url}: {e}")
+                if index < len(articles):
+                    logging.info(f"Processing article index: {index}")
+                    articles = driver.find_elements(By.CSS_SELECTOR, "a.anchor.result-list-title-link")
+                    article = articles[index]
+                    article_url = article.get_attribute("href")
+                    logging.info(f"Entering article: {article_url}")
+                    driver.get(article_url)
 
-            try:
-                article_title = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "span.title-text"))
-                ).text
-                article_data["article_title"] = article_title
-            except Exception as e:
-                logging.error(f"Could not extract article title from {article_url}: {e}")
+                    article_data = {
+                        "link": article_url,
+                        "journal_name": "N/A",
+                        "article_title": "N/A",
+                        "doi": "N/A",
+                        "publication_date": "N/A",
+                        "abstract": "N/A",
+                        "keywords": "N/A",
+                        "authors_data": []
+                    }
 
-            try:
-                doi_element = WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "a.anchor.doi"))
-                )
-                doi_link = doi_element.get_attribute("href").replace("https://doi.org/", "")
-                article_data["doi"] = doi_link
-            except Exception as e:
-                logging.error(f"Could not extract DOI from {article_url}: {e}")
-
-            try:
-                doi_pub_date = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.text-xs"))
-                ).text
-                article_data["publication_date"] = doi_pub_date
-            except Exception as e:
-                logging.error(f"Could not extract publication date from {article_url}: {e}")
-
-            try:
-                authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
-                for author in authors:
                     try:
-                        # Extract the author name
-                        given_name = author.find_element(By.CLASS_NAME, 'given-name').text
-                        surname = author.find_element(By.CLASS_NAME, 'surname').text
-                        author_name = f"{given_name} {surname}"
-                        author_button = author.find_element(By.XPATH, "../../..")
-
-                        # Click to open the side panel for lab details
-                        ActionChains(driver).move_to_element(author_button).click(author_button).perform()
-                        time.sleep(1)  # Wait for the side panel to open
-
-                        # Scrape lab affiliations
-                        labs = []
-                        try:
-                            lab_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-panel .affiliation")
-                            labs = [lab.text for lab in lab_elements]
-                        except Exception as e:
-                            logging.error(f"Error extracting affiliations for {author_name}: {e}")
-
-                        # Store author data
-                        article_data["authors_data"].append({"name": author_name, "labs": labs})
-
-                        # Close the side panel
-                        close_button = driver.find_element(By.CSS_SELECTOR, "button.side-panel-close-btn")
-                        close_button.click()
-                        time.sleep(0.5)  # Wait for the side panel to close
-
+                        journal_name = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.ID, "publication-title"))
+                        ).text
+                        article_data["journal_name"] = journal_name
                     except Exception as e:
-                        logging.error(f"Error processing author {author_name}: {e}")
+                        logging.error(f"Could not extract journal name from {article_url}: {e}")
+
+                    try:
+                        article_title = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, "span.title-text"))
+                        ).text
+                        article_data["article_title"] = article_title
+                    except Exception as e:
+                        logging.error(f"Could not extract article title from {article_url}: {e}")
+
+                    try:
+                        doi_element = WebDriverWait(driver, 15).until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, "a.anchor.doi"))
+                        )
+                        doi_link = doi_element.get_attribute("href").replace("https://doi.org/", "")
+                        article_data["doi"] = doi_link
+                    except Exception as e:
+                        logging.error(f"Could not extract DOI from {article_url}: {e}")
+
+                    try:
+                        doi_pub_date = WebDriverWait(driver, 10).until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, "div.text-xs"))
+                        ).text
+                        article_data["publication_date"] = doi_pub_date
+                    except Exception as e:
+                        logging.error(f"Could not extract publication date from {article_url}: {e}")
+
+                    try:
+                        authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
+                        for author in authors:
+                            try:
+                                # Extract the author name
+                                given_name = author.find_element(By.CLASS_NAME, 'given-name').text
+                                surname = author.find_element(By.CLASS_NAME, 'surname').text
+                                author_name = f"{given_name} {surname}"
+                                author_button = author.find_element(By.XPATH, "../../..")
+
+                                # Click to open the side panel for lab details
+                                ActionChains(driver).move_to_element(author_button).click(author_button).perform()
+                                time.sleep(1)  # Wait for the side panel to open
+
+                                # Scrape lab affiliations
+                                labs = []
+                                try:
+                                    lab_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-panel .affiliation")
+                                    labs = [lab.text for lab in lab_elements]
+                                except Exception as e:
+                                    logging.error(f"Error extracting affiliations for {author_name}: {e}")
+
+                                # Store author data
+                                article_data["authors_data"].append({"name": author_name, "labs": labs})
+
+                            except Exception as e:
+                                logging.error(f"Error processing author: {e}")
+                    except Exception as e:
+                        logging.error(f"Could not extract author data for {article_url}: {e}")
+
+                    # Add the article to the collected data
+                    articles_data.append(article_data)
 
             except Exception as e:
-                logging.error(f"Error extracting authors data from {article_url}: {e}")
+                logging.error(f"Error processing article index {index}: {e}")
 
-            # Abstract extraction
-            try:
-                # Wait for the abstract section to be present
-                WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, ".abstract.author"))
-                )
-                abstract_section = driver.find_element(By.CSS_SELECTOR, ".abstract.author")
-                abstract_text_div = abstract_section.find_element(By.CSS_SELECTOR, ".u-margin-s-bottom")
-                abstract = abstract_text_div.text if abstract_text_div else "N/A"
-                article_data["abstract"] = abstract
-            except Exception as e:
-                logging.error(f"Could not extract abstract from {article_url}: {e}")
-
-            try:
-                keywords = driver.find_elements(By.CLASS_NAME, "keyword")
-                keywords_list = ", ".join([keyword.text for keyword in keywords])
-                article_data["keywords"] = keywords_list
-            except Exception as e:
-                logging.error(f"Could not extract keywords from {article_url}: {e}")
-
-            # Collect the article data into the global articles_data list
-            articles_data.append(article_data)
-            logging.info(f"Collected data for article: {article_data['article_title']}")
-
-            # Save data every 5 articles
-            # if len(articles_data) % 5 == 0:
-            #     save_to_mongodb(articles_data, args.query)
-            #     logging.info(f"Saved {len(articles_data)} articles to MongoDB")
-
-            # Go back to the search results page
-            driver.back()
-            time.sleep(random.uniform(2, 4))
+       # Wait for the "next" button to be clickable
+        next_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "li.pagination-link.next-link a"))
+        )
+        if next_button:
+            # Click the "next" button
+            next_button.click()
+            logging.info("Clicked the next button.")
+        
+            # Wait a random amount of time to simulate human behavior
+            time.sleep(random.uniform(4, 8))
+        else:
+            break
 
     except Exception as e:
-        logging.error(f"An error occurred during the scraping process: {e}")
-        continue
+        logging.error(f"Error in while loop: {e}")
+
+driver.quit()

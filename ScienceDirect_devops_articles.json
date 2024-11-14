@@ -1,0 +1,642 @@
+[
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0950584924001885",
+        "journal_name": "Information and Software Technology",
+        "article_title": "Mapping DevOps capabilities to the software life cycle: A systematic literature review",
+        "doi": "10.1016/j.infsof.2024.107583",
+        "publication_date": "Volume 177, January 2025, 107583",
+        "abstract": "Many IT organizations are looking towards DevOps to make their software development and delivery processes faster and more reliable, while DevOps revolutionized the industry by emphasizing collaboration between development and operations teams. Nonetheless, there still exist challenges in harmonizing cultural, technical, measurement and process capabilities for its successful adoption.",
+        "keywords": "DevOps, Metrics, Performance, Adoption, Software development life cycle, Information system",
+        "authors_data": []
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S092054892400076X",
+        "journal_name": "Computer Standards & Interfaces",
+        "article_title": "A theory on human factors in DevOps adoption",
+        "doi": "10.1016/j.csi.2024.103907",
+        "publication_date": "Volume 92, March 2025, 103907",
+        "abstract": "DevOps is a software engineering paradigm that enables faster deliveries and higher quality products. However, DevOps adoption is a complex process that is still insufficiently supported by research. In addition, human factors are the main difficulty for a successful DevOps adoption, although very few studies address this topic.",
+        "keywords": "DevOps, DevOps adoption, Human factor, Literature review, Clustering, Theory proposal",
+        "authors_data": [
+            {
+                "name": "Juanjo Pérez-Sánchez",
+                "labs": [
+                    "",
+                    ""
+                ]
+            },
+            {
+                "name": "Saima Rafi",
+                "labs": [
+                    "Edinburgh Napier University, Merchiston Campus 10 Coliton Road, EH10 5DB, Edinburgh, United Kingdom",
+                    ""
+                ]
+            },
+            {
+                "name": "Juan Manuel Carrillo de Gea",
+                "labs": [
+                    "University of Murcia, C. Campus Universitario, Edificio 32, 30100, Murcia, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Joaquín Nicolás Ros",
+                "labs": [
+                    "University of Murcia, C. Campus Universitario, Edificio 32, 30100, Murcia, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "José Luis Fernández Alemán",
+                "labs": [
+                    "University of Murcia, C. Campus Universitario, Edificio 32, 30100, Murcia, Spain",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0164121224002255",
+        "journal_name": "Journal of Systems and Software",
+        "article_title": "An architecture for model-based and intelligent automation in DevOps",
+        "doi": "10.1016/j.jss.2024.112180",
+        "publication_date": "Volume 217, November 2024, 112180",
+        "abstract": "The increasing complexity of modern systems poses numerous challenges at all stages of system development and operation. Continuous software and system engineering processes, e.g., DevOps, are increasingly adopted and spread across organizations. In parallel, many leading companies have begun to apply artificial intelligence (AI) principles and techniques, including Machine Learning (ML), to improve their products. However, there is no holistic approach that can support and enhance the growing challenges of DevOps. In this paper, we propose a software architecture that provides the foundations of a model-based framework for the development of AI-augmented solutions incorporating methods and tools for continuous software and system engineering and validation. The key characteristic of the proposed architecture is that it allows leveraging the advantages of both AI/ML and Model Driven Engineering (MDE) approaches and techniques in a DevOps context. This architecture has been designed, developed and applied in the context of the European large collaborative project named AIDOaRt. In this paper, we also report on the practical evaluation of this architecture. This evaluation is based on a significant set of technical solutions implemented and applied in the context of different real industrial case studies coming from the AIDOaRt project. Moreover, we analyze the collected results and discuss them according to both architectural and technical challenges we intend to tackle with the proposed architecture.",
+        "keywords": "Software architecture, DevOps, Continuous software engineering, Artificial Intelligence, Mode-driven engineering",
+        "authors_data": [
+            {
+                "name": "Romina Eramo",
+                "labs": [
+                    "Department of Communication Science, University of Teramo, Teramo, Italy",
+                    ""
+                ]
+            },
+            {
+                "name": "Bilal Said",
+                "labs": [
+                    "Softeam Software BU, Docaposte, Nantes, France",
+                    ""
+                ]
+            },
+            {
+                "name": "Marc Oriol",
+                "labs": [
+                    "Universitat Politècnica de Catalunya, Barcelona, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Hugo Bruneliere",
+                "labs": [
+                    "IMT Atlantique, LS2N (UMR CNRS 6004), Nantes, France",
+                    ""
+                ]
+            },
+            {
+                "name": "Sergio Morales",
+                "labs": [
+                    "Universitat Oberta de Catalunya, Barcelona, Spain",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0950584924001903",
+        "journal_name": "Information and Software Technology",
+        "article_title": "Improving DevOps team performance through context-capability coalignment: Towards a profile for public sector organizations",
+        "doi": "10.1016/j.infsof.2024.107585",
+        "publication_date": "Volume 178, February 2025, 107585",
+        "abstract": "Many IT organizations turn to agile software delivery approaches such as DevOps in order to reduce the number of IT projects that are running behind schedule and above budget. However, the DevOps paradigm calls for an increased set of capabilities that need to be built and aligned with their context in order to ensure superior team performance.",
+        "keywords": "Software delivery team performance, DevOps, Team capabilities, Coalignment, Contextual factors, Action design research",
+        "authors_data": [
+            {
+                "name": "Olivia H. Plant",
+                "labs": [
+                    "Department of High-tech Business and Entrepreneurship, University of Twente, Enschede, the Netherlands",
+                    "",
+                    "Eraneos Consulting Netherlands B.V., Amsterdam, the Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "Adina Aldea",
+                "labs": [
+                    "Department of High-tech Business and Entrepreneurship, University of Twente, Enschede, the Netherlands",
+                    "",
+                    "SAP LeanIX, Amsterdam, the Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "Jos van Hillegersberg",
+                "labs": [
+                    "Department of High-tech Business and Entrepreneurship, University of Twente, Enschede, the Netherlands",
+                    "",
+                    "Tilburg University/ Jheronimus Academy of Data Science, Den Bosch, the Netherlands",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0164121223003035",
+        "journal_name": "Journal of Systems and Software",
+        "article_title": "Harmonizing DevOps taxonomies — A grounded theory study",
+        "doi": "10.1016/j.jss.2023.111908",
+        "publication_date": "Volume 208, February 2024, 111908",
+        "abstract": "DevOps responds to the growing need of companies to streamline the software development process and thus has experienced widespread adoption in the past few years. However, the successful adoption of DevOps requires companies to address important cultural and organizational changes. Nevertheless, it is crucial to recognize that various DevOps taxonomies exist, both from academic and practitioner perspectives, which may lead to misleading or failed adoption of DevOps.",
+        "keywords": "DevOps team structures, DevOps taxonomies, Grounded theory, Inter-coder agreement",
+        "authors_data": [
+            {
+                "name": "Jessica Díaz",
+                "labs": [
+                    "ETSI Sistemas Informáticos, Departamento de Sistemas Informáticos, Universidad Politécnica de Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Jorge Pérez",
+                "labs": [
+                    "ETSI Sistemas Informáticos, Departamento de Sistemas Informáticos, Universidad Politécnica de Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Isaque Alves",
+                "labs": [
+                    "Department of Computer Science, University of São Paulo, Brazil",
+                    ""
+                ]
+            },
+            {
+                "name": "Fabio Kon",
+                "labs": [
+                    "Department of Computer Science, University of São Paulo, Brazil",
+                    ""
+                ]
+            },
+            {
+                "name": "Leonardo Leite",
+                "labs": [
+                    "Department of Computer Science, University of São Paulo, Brazil",
+                    ""
+                ]
+            },
+            {
+                "name": "Paulo Meirelles",
+                "labs": [
+                    "Department of Computer Science, University of São Paulo, Brazil",
+                    ""
+                ]
+            },
+            {
+                "name": "Carla Rocha",
+                "labs": [
+                    "Faculty of Gama, University of Brasilia, Brazil",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0164121223003011",
+        "journal_name": "Journal of Systems and Software",
+        "article_title": "Monitoring tools for DevOps and microservices: A systematic grey literature review",
+        "doi": "10.1016/j.jss.2023.111906",
+        "publication_date": "Volume 208, February 2024, 111906",
+        "abstract": "Microservice-based systems are usually developed according to agile practices like DevOps, which enables rapid and frequent releases to promptly react and adapt to changes. Monitoring is a key enabler for these systems, as they allow to continuously get feedback from the field and support timely and tailored decisions for a quality-driven evolution. In the realm of monitoring tools available for microservices in the DevOps-driven development practice, each with different features, assumptions, and performance, selecting a suitable tool is an as much difficult as impactful task.",
+        "keywords": "Monitoring, Microservice, DevOps, MSA, Tools",
+        "authors_data": [
+            {
+                "name": "L. Giamattei",
+                "labs": [
+                    "University of Naples Federico II, Italy",
+                    ""
+                ]
+            },
+            {
+                "name": "A. Guerriero",
+                "labs": [
+                    "University of Naples Federico II, Italy",
+                    ""
+                ]
+            },
+            {
+                "name": "R. Pietrantuono",
+                "labs": [
+                    "University of Naples Federico II, Italy",
+                    ""
+                ]
+            },
+            {
+                "name": "S. Russo",
+                "labs": [
+                    "University of Naples Federico II, Italy",
+                    ""
+                ]
+            },
+            {
+                "name": "I. Malavolta",
+                "labs": [
+                    "Vrije Universiteit Amsterdam, The Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "T. Islam",
+                "labs": [
+                    "Vrije Universiteit Amsterdam, The Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "M. Dînga",
+                "labs": [
+                    "Vrije Universiteit Amsterdam, The Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "A. Koziolek",
+                "labs": [
+                    "Kastel - Karlsruhe Institute of Technology, Karlsruhe, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "S. Singh",
+                "labs": [
+                    "Kastel - Karlsruhe Institute of Technology, Karlsruhe, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "M. Armbruster",
+                "labs": [
+                    "Kastel - Karlsruhe Institute of Technology, Karlsruhe, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "J.M. Gutierrez-Martinez",
+                "labs": [
+                    "University of Alcalá, Alcalá de Henares, Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "S. Caro-Alvaro",
+                "labs": [
+                    "University of Alcalá, Alcalá de Henares, Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "D. Rodriguez",
+                "labs": [
+                    "University of Alcalá, Alcalá de Henares, Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "S. Weber",
+                "labs": [
+                    "FZI Research Center for Information Technology, Karlsruhe, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "J. Henss",
+                "labs": [
+                    "FZI Research Center for Information Technology, Karlsruhe, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "E. Fernandez Vogelin",
+                "labs": [
+                    "Panel Sistemas Informaticos, Madrid, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "F. Simon Panojo",
+                "labs": [
+                    "Panel Sistemas Informaticos, Madrid, Spain",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0167739X24001286",
+        "journal_name": "Future Generation Computer Systems",
+        "article_title": "Enabling DevOps for Fog Applications in the Smart Manufacturing domain: A Model-Driven based Platform Engineering approach",
+        "doi": "10.1016/j.future.2024.03.053",
+        "publication_date": "Volume 157, August 2024, Pages 360-375",
+        "abstract": "Cloud Computing is revolutionizing smart manufacturing by offering on-demand and scalable computer systems that facilitate plant data analysis and operational efficiency optimization. DevOps is a methodology, widely used for developing Cloud Computing systems, that streamlines software development by improving its integration, delivery, and deployment. Although cloud application designers within a DevOps team are assumed to have development and operational knowledge, this does not fall within the skills of experts that design analytics applications of plant data. The deployment environment is also relevant since, as such applications are often hosted in the Fog, the proliferation of application components may hinder their composition and validation. This work is aimed at embracing the Platform Engineering approach to provide a tailored toolkit that guides the design and development of OpenFog compliant applications for the experts in the Smart Manufacturing domain. The platform uses Model Driven Engineering techniques and a flow-based visual editor to allow application designers to graphically compose applications from components previously delivered by component developers, abstracting them from the underlying technologies. As a result, containerized applications, ready to be deployed and run by a container orchestrator, are obtained. The feasibility of the proposal is proved through an industrial case study.",
+        "keywords": "Fog Computing, Model Driven Engineering, Node-RED, Smart Manufacturing, DevOps, Platform Engineering",
+        "authors_data": [
+            {
+                "name": "Julen Cuadra",
+                "labs": [
+                    "Systems Engineering and Automatic Control Department, University of the Basque Country (UPV/EHU), Bilbao, 48013, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Ekaitz Hurtado",
+                "labs": [
+                    "Systems Engineering and Automatic Control Department, University of the Basque Country (UPV/EHU), Bilbao, 48013, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Isabel Sarachaga",
+                "labs": [
+                    "Systems Engineering and Automatic Control Department, University of the Basque Country (UPV/EHU), Bilbao, 48013, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Elisabet Estévez",
+                "labs": [
+                    "Electronics and Automation Engineering Department, University of Jaén, Jaén, 23071, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Oskar Casquero",
+                "labs": [
+                    "Systems Engineering and Automatic Control Department, University of the Basque Country (UPV/EHU), Bilbao, 48013, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Aintzane Armentia",
+                "labs": [
+                    "Systems Engineering and Automatic Control Department, University of the Basque Country (UPV/EHU), Bilbao, 48013, Spain",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S092054892300048X",
+        "journal_name": "Computer Standards & Interfaces",
+        "article_title": "Is it worth adopting DevOps practices in Global Software Engineering? Possible challenges and benefits",
+        "doi": "10.1016/j.csi.2023.103767",
+        "publication_date": "Volume 87, January 2024, 103767",
+        "abstract": "The software industry is adopting the DevOps paradigm to an increasingly frequent extent. In addition, the trend of developing software in a distributed manner greatly increased as a result of the COVID-19 pandemic, which forced team members from software companies to work remotely. We present the results of a Systematic Mapping Study (SMS) of how DevOps has been applied in distributed and global settings that adopts Global Software Development (GSD). The results were obtained from analysing 27 papers. The main conclusions obtained after carrying our SMS show that adopting DevOps in such settings by implementing certain practices brings several advantages to software companies, even though there are difficulties to be confronted when adopting DevOps in global and distributed contexts. Moreover, we (1) proposed definition of DevOps in distributed and global settings, (2) mapped the challenges detected with a list of well-known GSD risks and (3) mapped the benefits that can be obtained from applying certain practices identified and the challenges that should be overcame to obtain such benefits.",
+        "keywords": "Global software engineering, DevOps, Distributed software development",
+        "authors_data": [
+            {
+                "name": "Rubén Grande",
+                "labs": [
+                    "ALARCOS Research Group, University of Castilla-La Mancha, Paseo de la Universidad 4, 13071 Ciudad Real, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Aurora Vizcaíno",
+                "labs": [
+                    "ALARCOS Research Group, University of Castilla-La Mancha, Paseo de la Universidad 4, 13071 Ciudad Real, Spain",
+                    ""
+                ]
+            },
+            {
+                "name": "Félix O. García",
+                "labs": [
+                    "ALARCOS Research Group, University of Castilla-La Mancha, Paseo de la Universidad 4, 13071 Ciudad Real, Spain",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S2405844024023430",
+        "journal_name": "N/A",
+        "article_title": "Slide-block: End-to-end amplified security to improve DevOps resilience through pattern-based authentication",
+        "doi": "10.1016/j.heliyon.2024.e26312",
+        "publication_date": "Volume 10, Issue 4, 29 February 2024, e26312",
+        "abstract": "DevOps represents the fusion of cultural philosophies, tools, and practices that rapidly enhance an organization's capacity to deploy services and applications. Cloud-based tools, a subset of DevOps services, facilitate collaboration between development and operations teams within an organization. However, persistent challenges such as inadequate security management, substantial leakage of sensitive data, and system/service unavailability pose significant threats to sustainability. We propose an end-to-end enhanced security framework to fortify DevOps resilience by implementing authentication and vulnerability management through the Slide-Block methodology. Our approach comprises four sequential processes: pattern-based authentication, tri-level access control, privacy-focused data storage, and vulnerability management and correction. Initially, we establish candidate legitimacy through pattern-based authentication using the Magnificent Chacha-Poly 1305 algorithm. Subsequently, we devise effective access policies using the Enhanced Deep Deterministic Policy Gradient (EDDPG) algorithm, employing tri-level access control based on trust value, attributes, and roles for optimal user and developer selection via the African Vulture Optimization Algorithm (AVOA). Moreover, we encrypt data in transit and at rest using Mcha-Poly 1305, considering sensitivity, and store it in a blockchain to enhance data privacy. Our approach incorporates a sliding window blockchain for secure data transmission and storage. Finally, we identify and address attack and application-based issues using the Tweak Naive Bayes (Tweak-NB) algorithm and Intruder Vulnerability Scanner (IVS). Our Slide-Block framework demonstrates superior performance in detection rate, authentication time, packet loss, security strengthening, communication overhead, and latency compared to existing models.",
+        "keywords": "Security in DevOps-Cloud, Vulnerability management, Pattern-based authentication, Tri-level access control, Secure data storage, Attack detection and mitigation",
+        "authors_data": [
+            {
+                "name": "Gopalakrishnan Sriraman",
+                "labs": [
+                    "Department of Computing Science and Engineering, VIT Bhopal University, Sehore, MP, India",
+                    ""
+                ]
+            },
+            {
+                "name": "Shriram R",
+                "labs": [
+                    "Department of Computing Science and Engineering, VIT Bhopal University, Sehore, MP, India",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S1471772723000283",
+        "journal_name": "Information and Organization",
+        "article_title": "Integrating development and operations teams: A control approach for DevOps",
+        "doi": "10.1016/j.infoandorg.2023.100474",
+        "publication_date": "Volume 33, Issue 3, September 2023, 100474",
+        "abstract": "Information systems (IS) literature has predominantly studied IS project control with a focus on software development projects. However, by virtue of digital transformation, an increasing number of organizations are implementing cross-functional teams, combining software development with software operations tasks. The goal is to react quickly to the ever-changing market requirements.",
+        "keywords": "DevOps, Control theory, Internal IT teams, Case study, Product management, Tensions",
+        "authors_data": [
+            {
+                "name": "Anna Wiedemann",
+                "labs": [
+                    "Zurich University of Applied Sciences, Theaterstrasse 17, 8401 Winterthur, Switzerland",
+                    ""
+                ]
+            },
+            {
+                "name": "Manuel Wiesche",
+                "labs": [
+                    "Technical University of Dortmund, August-Schmidt-Straße 1, 44227 Dortmund, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "Heiko Gewald",
+                "labs": [
+                    "Neu-Ulm University of Applied Sciences, Wileystr. 1, 89231 Neu-Ulm, Germany",
+                    ""
+                ]
+            },
+            {
+                "name": "Helmut Krcmar",
+                "labs": [
+                    "Technical University of Munich, Boltzmannstraße 3, 85748 Garching, Germany",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0950584923000046",
+        "journal_name": "Information and Software Technology",
+        "article_title": "DevOps critical success factors — A systematic literature review",
+        "doi": "10.1016/j.infsof.2023.107150",
+        "publication_date": "Volume 157, May 2023, 107150",
+        "abstract": "DevOps is a set of software development and operation practices and a recent addition to a large family of different kinds of software process models. The model emerged out of the observation that information systems operations and developments should be closely integrated activities to ensure the success of any organization. Thus, DevOps methods are an additive tool for companies to improve overall performance in their software development processes and operations.",
+        "keywords": "DevOps, Development and operations, Success factors, Barriers, Literature review",
+        "authors_data": [
+            {
+                "name": "Nasreen Azad",
+                "labs": [
+                    "Department of Software Engineering, LUT University, PL 20, Lappeenranta, FI-53851, Finland",
+                    ""
+                ]
+            },
+            {
+                "name": "Sami Hyrynsalmi",
+                "labs": [
+                    "Department of Software Engineering, LUT University, PL 20, Lappeenranta, FI-53851, Finland",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S0950584923000952",
+        "journal_name": "Information and Software Technology",
+        "article_title": "Towards optimization of anomaly detection in DevOps",
+        "doi": "10.1016/j.infsof.2023.107241",
+        "publication_date": "Volume 160, August 2023, 107241",
+        "abstract": "DevOps has recently become a mainstream solution for bridging the gaps between development (Dev) and operations (Ops) enabling cross-functional collaboration. The DevOps concept of continuous monitoring may bring a lot of benefits to development teams such as early detection of run-time errors and various performance anomalies.",
+        "keywords": "Microservices, DevOps, Anomaly detection, Deep learning",
+        "authors_data": [
+            {
+                "name": "Adha Hrusto",
+                "labs": [
+                    "Lund University, Department of Computer Science, Box 118, SE-221 00 Lund, Sweden",
+                    "",
+                    "System Verification Sweden AB, Hyllie Stationstorg 31, SE-215 32 Malmö, Sweden",
+                    ""
+                ]
+            },
+            {
+                "name": "Emelie Engström",
+                "labs": [
+                    "Lund University, Department of Computer Science, Box 118, SE-221 00 Lund, Sweden",
+                    ""
+                ]
+            },
+            {
+                "name": "Per Runeson",
+                "labs": [
+                    "Lund University, Department of Computer Science, Box 118, SE-221 00 Lund, Sweden",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S1467089522000124",
+        "journal_name": "International Journal of Accounting Information Systems",
+        "article_title": "Rethinking IT governance: Designing a framework for mitigating risk and fostering internal control in a DevOps environment",
+        "doi": "10.1016/j.accinf.2022.100560",
+        "publication_date": "Volume 45, June 2022, 100560",
+        "abstract": "An increasing amount of companies is transforming their IT departments towards cross-functional teams which are responsible for both development and operation of software and use automation to speed up their delivery process. This novel approach, which is commonly known as “DevOps”, promises many benefits such as increased speed and frequency of deployment. However, companies using DevOps are often struggling with demonstrating control of their software delivery processes to IT auditing parties, due to the decentralized decision-making structures and high degree of automation in DevOps teams. The research at hand presents a framework which aims to provide guidance to organizations in mitigating and governing risks in IT teams and departments that make use of the DevOps paradigm. We have adopted a design science research approach, building on a literature review and semi-structured interviews with seventeen employees from nine Dutch companies that are in different stages of their DevOps transition. The results suggest that two main factors which influence how departments design their DevOps environment are risk appetite and the DevOps maturity. We furthermore find that companies in practice often use a mixture of traditional, manual IT controls and the automated controls suggested in literature. Based on these insights, a situational control framework is designed which suggests suitable risk mitigation practices.",
+        "keywords": "DevOps, Risk management, Internal control, IT audit, Agile",
+        "authors_data": [
+            {
+                "name": "Olivia H. Plant",
+                "labs": [
+                    "University of Twente, Industrial Engineering & Business Information Systems, Drienerlolaan 5, Enschede, The Netherlands",
+                    "",
+                    "Quint Nederland B.V., De Oude Molen 1, Amstelveen, The Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "Jos van Hillegersberg",
+                "labs": [
+                    "University of Twente, Industrial Engineering & Business Information Systems, Drienerlolaan 5, Enschede, The Netherlands",
+                    "",
+                    "Tilburg University/ JADS, Sint Janssingel 92, Den Bosch, The Netherlands",
+                    ""
+                ]
+            },
+            {
+                "name": "Adina Aldea",
+                "labs": [
+                    "University of Twente, Industrial Engineering & Business Information Systems, Drienerlolaan 5, Enschede, The Netherlands",
+                    "",
+                    "LeanIX, Prins Bernhardplein 200, Amsterdam, The Netherlands",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S1319157823000393",
+        "journal_name": "Journal of King Saud University - Computer and Information Sciences",
+        "article_title": "Framework for automatic detection of anomalies in DevOps",
+        "doi": "10.1016/j.jksuci.2023.02.010",
+        "publication_date": "Volume 35, Issue 3, March 2023, Pages 8-19",
+        "abstract": "Log-based anomaly detection is important for improving the reliability and availability of software systems, especially those evolving using DevOps, owing to the huge number of logs generated during continuous practices. However, DevOps practitioners typically inspect and interpret the generated data and logs manually on specific occasions as part of the troubleshooting process. This process of manual inspection is time consuming and challenging because these data and logs have grown to an unmanageable size owing to the increasing size and complexity of the systems.",
+        "keywords": "DevOps, AIOps, CI/CD, Anomaly detection, Release management, Machine learning, DADFDevOps Anomaly Detection Framework, DevOps Anomaly Detection Framework, ADBPAnomaly Detection Before Production, Anomaly Detection Before Production, ADASAnomaly Detection After Staging, Anomaly Detection After Staging",
+        "authors_data": [
+            {
+                "name": "Ahmed Hany Fawzy",
+                "labs": [
+                    "Faculty of Computers and Artificial Intelligence - Cairo University, Cairo, Egypt",
+                    ""
+                ]
+            },
+            {
+                "name": "Khaled Wassif",
+                "labs": [
+                    "Faculty of Computers and Artificial Intelligence - Cairo University, Cairo, Egypt",
+                    ""
+                ]
+            },
+            {
+                "name": "Hanan Moussa",
+                "labs": [
+                    "Faculty of Computers and Artificial Intelligence - Cairo University, Cairo, Egypt",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "link": "https://www.sciencedirect.com/science/article/pii/S1877050922015290",
+        "journal_name": "Procedia Computer Science",
+        "article_title": "DevOps and Neural Network Based Full Lifecycle Management Model for Power Information Systems",
+        "doi": "10.1016/j.procs.2022.10.088",
+        "publication_date": "Volume 208, 2022, Pages 642-649",
+        "abstract": "With the construction and development of smart grid, the traditional power information system operation architecture is facing the pressure brought by the rapid growth of company business and the rapid development of information technology. In the process of information system lifecycle management, there are some problems, such as unclear division of responsibilities, long system construction time, high risk of system upgrade, etc. In order to solve the existing problems, this paper introduces and analyzes the DevOps engineering thought and technology which takes the development and operation and maintenance of information system as a whole, and studies the application model of DevOps in the current power information system management process. In recent years, with the development of machine learning and deep learning, artificial neural network algorithms have made breakthroughs in different fields, and various network mechanisms and training algorithms have emerged. For example, in the field of load forecasting, there are methods based on probability forecasting and so on. Therefore, it is of great significance to study the application of the new algorithm in the power system to improve the accuracy of power load forecasting and improve the reliability of power network operation. By studying the application model based on DevOps in the whole life cycle process of the power information system, it provides a research basis for the development of the power information system operation structure, and promotes the management of the information system to continuously meet the requirements of lean management and meet the needs of the company's business development.",
+        "keywords": "DevOps, neural networks, power information systems, lifecycle management",
+        "authors_data": [
+            {
+                "name": "Zhen Sun",
+                "labs": [
+                    "NARI Technology co.,ltd.",
+                    ""
+                ]
+            },
+            {
+                "name": "Yan Li",
+                "labs": [
+                    "NARI Technology co.,ltd.",
+                    ""
+                ]
+            },
+            {
+                "name": "Lei Wen",
+                "labs": [
+                    "NARI Technology co.,ltd.",
+                    ""
+                ]
+            }
+        ]
+    }
+]
