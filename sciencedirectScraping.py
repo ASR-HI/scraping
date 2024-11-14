@@ -10,9 +10,7 @@ import signal
 import sys
 import argparse
 import logging
-from testBD import save_to_mongodb 
-
-
+from testBD import save_to_mongodb
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -68,7 +66,7 @@ logging.info(driver.title)
 # Hide WebDriver properties
 driver.execute_script("""    
     Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-    Object.defineProperty(navigator, 'language', {get: () => 'en-US'});
+    Object.defineProperty(navigator, 'language', {get: () => 'en-US'}); 
     Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
 """)
 
@@ -142,10 +140,9 @@ while True:
                 "article_title": "N/A",
                 "doi": "N/A",
                 "publication_date": "N/A",
-                "authors": "N/A",
-                "affiliations": "N/A",
                 "abstract": "N/A",
                 "keywords": "N/A",
+                "authors_data": []
             }
 
             try:
@@ -183,34 +180,41 @@ while True:
 
             try:
                 authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
-                authors_list = ", ".join([ 
-                    f"{author.find_element(By.CLASS_NAME, 'given-name').text} {author.find_element(By.CLASS_NAME, 'surname').text}" 
-                    for author in authors 
-                ])
-                article_data["authors"] = authors_list
+                for author in authors:
+                    try:
+                        # Extract the author name
+                        given_name = author.find_element(By.CLASS_NAME, 'given-name').text
+                        surname = author.find_element(By.CLASS_NAME, 'surname').text
+                        author_name = f"{given_name} {surname}"
+                        author_button = author.find_element(By.XPATH, "../../..")
+
+                        # Click to open the side panel for lab details
+                        ActionChains(driver).move_to_element(author_button).click(author_button).perform()
+                        time.sleep(1)  # Wait for the side panel to open
+
+                        # Scrape lab affiliations
+                        labs = []
+                        try:
+                            lab_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-panel .affiliation")
+                            labs = [lab.text for lab in lab_elements]
+                        except Exception as e:
+                            logging.error(f"Error extracting affiliations for {author_name}: {e}")
+
+                        # Store author data
+                        article_data["authors_data"].append({"name": author_name, "labs": labs})
+
+                        # Close the side panel
+                        close_button = driver.find_element(By.CSS_SELECTOR, "button.side-panel-close-btn")
+                        close_button.click()
+                        time.sleep(0.5)  # Wait for the side panel to close
+
+                    except Exception as e:
+                        logging.error(f"Error processing author {author_name}: {e}")
+
             except Exception as e:
-                logging.error(f"Could not extract authors from {article_url}: {e}")
+                logging.error(f"Error extracting authors data from {article_url}: {e}")
 
-            try:
-                # Wait for the "Show more" button to be clickable and click it
-                show_more_button = WebDriverWait(driver, 15).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "#show-more-btn"))
-                )
-                show_more_button.click()
-
-                # Wait for the affiliations to be loaded after clicking the button
-                WebDriverWait(driver, 15).until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, "dl.affiliation dd"))
-                )
-
-                # Extract affiliations
-                affiliations = driver.find_elements(By.CSS_SELECTOR, "dl.affiliation dd")
-                affiliations_list = "\n".join([affiliation.text.replace("&amp;", "&").strip() for affiliation in affiliations])
-                article_data["affiliations"] = affiliations_list
-
-            except Exception as e:
-                logging.error(f"Could not extract affiliations from {article_url}: {e}")
-
+            # Abstract extraction
             try:
                 # Wait for the abstract section to be present
                 WebDriverWait(driver, 15).until(
@@ -230,20 +234,19 @@ while True:
             except Exception as e:
                 logging.error(f"Could not extract keywords from {article_url}: {e}")
 
-            # Append the article data to the articles list
+            # Collect the article data into the global articles_data list
             articles_data.append(article_data)
+            logging.info(f"Collected data for article: {article_data['article_title']}")
 
-            # Go back to the search results
+            # Save data every 5 articles
+            # if len(articles_data) % 5 == 0:
+            #     save_to_mongodb(articles_data, args.query)
+            #     logging.info(f"Saved {len(articles_data)} articles to MongoDB")
+
+            # Go back to the search results page
             driver.back()
             time.sleep(random.uniform(2, 4))
+
     except Exception as e:
-        logging.error(f"Error during scraping articles: {e}")
-        break
-
-# Final save to ensure all collected data is saved
-save_data(args.query)
-save_to_mongodb(articles_data, "sciencedirect")
-
-
-
-driver.quit()
+        logging.error(f"An error occurred during the scraping process: {e}")
+        continue
