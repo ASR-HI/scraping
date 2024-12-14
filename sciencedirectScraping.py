@@ -2,7 +2,6 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
 import time
 import random
 import json
@@ -10,12 +9,12 @@ import signal
 import sys
 import argparse
 import logging
+from selenium.webdriver.common.action_chains import ActionChains
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Set up a global variable for articles data
-articles_data = []
-article_links = []  # To store all article links
+articles_data = []  # To store detailed article information
+article_links = []  # To store all article URLs
 
 # Function to handle cleanup on exit
 def save_data(query, signum=None, frame=None):
@@ -26,7 +25,7 @@ def save_data(query, signum=None, frame=None):
         json.dump(articles_data, json_file, ensure_ascii=False, indent=4)
     sys.exit(0)
 
-# Register the signal handler
+# Register the signal handler for cleanup on exit
 signal.signal(signal.SIGINT, lambda signum, frame: save_data(args.query, signum, frame))
 
 # Set up argument parser for query
@@ -34,7 +33,7 @@ parser = argparse.ArgumentParser(description="Scrape ScienceDirect articles base
 parser.add_argument("--query", type=str, required=True, help="Research topic to search for.")
 args = parser.parse_args()
 
-# Set up Chrome options
+# Set up Chrome options for undetected_chromedriver
 chrome_options = uc.ChromeOptions()
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
 chrome_options.add_argument("--start-maximized")
@@ -45,7 +44,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-webgl")
 chrome_options.add_argument("--disable-application-cache")
 
-# Initialize undetected Chrome driver
+# Initialize the Chrome driver
 try:
     driver = uc.Chrome(options=chrome_options)
 except Exception as e:
@@ -63,7 +62,7 @@ try:
     )
     search.send_keys(args.query)
     time.sleep(random.uniform(3, 7))
-
+    
     # Click search button
     search_button = driver.find_element(By.CLASS_NAME, "button-primary")
     search_button.click()
@@ -71,7 +70,6 @@ try:
 
 except Exception as e:
     logging.error(f"Could not search for '{args.query}': {e}")
-
 
 # Enable "Review articles" filter
 try:
@@ -140,20 +138,32 @@ def collect_article_links():
 # Function to click the "Next" button
 def go_to_next_page():
     try:
+        # Faites défiler la page jusqu'au bouton
         next_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "li.pagination-link.next-link a"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "li.pagination-link.next-link a"))
         )
+        driver.execute_script("arguments[0].scrollIntoView();", next_button)
+        logging.info("Scrolled to the next button.")
+
+        # Attendez quelques secondes pour que la page se charge correctement
+        time.sleep(1)
+
+        # Cliquez sur le bouton
         next_button.click()
         logging.info("Clicked the next button.")
         time.sleep(random.uniform(3, 7))
         return True
     except Exception as e:
-        logging.info("No more pages to navigate.")
+        logging.error(f"Error while trying to click the next button: {e}")
         return False
 
-# Collect all article links from all pages
+
+# Collect links from all pages before processing
 while True:
+    # Collect links from the current page
     collect_article_links()
+
+    # Go to the next page
     if not go_to_next_page():
         break
 
@@ -207,63 +217,63 @@ def process_article(url):
     except Exception as e:
         logging.error(f"Could not extract publication date from {url}: {e}")
     
-     # Abstract extraction
+    # Abstract extraction
     try:
-                # Wait for the abstract section to be present
-                WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, ".abstract.author"))
-                )
-                abstract_section = driver.find_element(By.CSS_SELECTOR, ".abstract.author")
-                abstract_text_div = abstract_section.find_element(By.CSS_SELECTOR, ".u-margin-s-bottom")
-                abstract = abstract_text_div.text if abstract_text_div else "N/A"
-                article_data["abstract"] = abstract
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".abstract.author"))
+        )
+        abstract_section = driver.find_element(By.CSS_SELECTOR, ".abstract.author")
+        abstract_text_div = abstract_section.find_element(By.CSS_SELECTOR, ".u-margin-s-bottom")
+        abstract = abstract_text_div.text if abstract_text_div else "N/A"
+        article_data["abstract"] = abstract
     except Exception as e:
-                logging.error(f"Could not extract abstract from {url}: {e}")
+        logging.error(f"Could not extract abstract from {url}: {e}")
 
     try:
-                keywords = driver.find_elements(By.CLASS_NAME, "keyword")
-                keywords_list = ", ".join([keyword.text for keyword in keywords])
-                article_data["keywords"] = keywords_list
+        keywords = driver.find_elements(By.CLASS_NAME, "keyword")
+        keywords_list = ", ".join([keyword.text for keyword in keywords])
+        article_data["keywords"] = keywords_list
     except Exception as e:
-                logging.error(f"Could not extract keywords from {url}: {e}")
+        logging.error(f"Could not extract keywords from {url}: {e}")
 
     try:
         authors = driver.find_elements(By.CSS_SELECTOR, "span.react-xocs-alternative-link")
         for author in authors:
             try:
-             # Extract the author name
                 given_name = author.find_element(By.CLASS_NAME, 'given-name').text
                 surname = author.find_element(By.CLASS_NAME, 'surname').text
                 author_name = f"{given_name} {surname}"
                 author_button = author.find_element(By.XPATH, "../../..")
 
-                # Click to open the side panel for lab details
                 ActionChains(driver).move_to_element(author_button).click(author_button).perform()
-                time.sleep(1)  # Wait for the side panel to open
+                time.sleep(1)
 
-                                # Scrape lab affiliations
                 labs = []
                 try:
-                            lab_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-panel .affiliation")
-                            labs = [lab.text for lab in lab_elements]
+                    lab_elements = driver.find_elements(By.CSS_SELECTOR, "div.side-panel .affiliation")
+                    labs = [lab.text for lab in lab_elements]
                 except Exception as e:
-                            logging.error(f"Error extracting affiliations for {author_name}: {e}")
+                    logging.error(f"Error extracting affiliations for {author_name}: {e}")
 
-                                    # Store author data
                 article_data["authors_data"].append({"name": author_name, "labs": labs})
 
             except Exception as e:
-                    logging.error(f"Error processing author: {e}")
+                logging.error(f"Error processing author: {e}")
     except Exception as e:
-            logging.error(f"Could not extract author data for {url}: {e}")
-
-
+        logging.error(f"Could not extract author data for {url}: {e}")
 
     articles_data.append(article_data)
 
-# Process all collected article links starting from the 23rd link
+# Process all collected articles
 for article_link in article_links:
     process_article(article_link)
 
+
 # Save the collected data
 save_data(args.query)
+
+# Close the browser
+try:
+    driver.quit()
+except Exception as e:
+    logging.error(f"Error closing the browser: {e}")
