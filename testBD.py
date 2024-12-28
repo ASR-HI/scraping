@@ -1,12 +1,15 @@
 import logging
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
+import os
 
 
 
 def save_to_mongodb(articles_data , collection_name):
 
-    uri = "mongodb+srv://user:user_password@cluster0.d7aq0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    load_dotenv()
+    uri = os.getenv("MONGO_URI")
 
     client = MongoClient(uri, server_api=ServerApi('1'))
     # save data to MongoDB
