@@ -9,14 +9,21 @@ import time
 import os
 
 # Charger les données du fichier JSON avec un encodage spécifique
-with open('ieee_output[1].json', 'r', encoding='utf-8') as file:
+with open('./finalScienceDirect.json', 'r', encoding='utf-8') as file:
     articles = json.load(file)
+
+# Charger les journaux déjà traités (s'ils existent)
+if os.path.exists('./journaux_scienceDirect.json'):
+    with open('./journaux_scienceDirect.json', 'r', encoding='utf-8') as file:
+        all_journal_data = json.load(file)
+else:
+    all_journal_data = []
+
+# Extraire les noms des journaux déjà traités
+processed_journals = {journal['Journal Name'] for journal in all_journal_data}
 
 # Initialiser le driver
 driver = webdriver.Chrome()  # Assurez-vous d'avoir le bon chemin du driver
-
-# Liste pour stocker les données finales de tous les journaux
-all_journal_data = []
 
 # Fonction pour scraper les données d'un journal
 def scrape_journal_data(journal_name):
@@ -75,13 +82,14 @@ def scrape_journal_data(journal_name):
         except Exception as e:
             print(f"Erreur lors de la récupération des ISSN pour '{journal_name}': {e}")
             issn_text = "N/A"
-            # Récupérer le pays
+
+        # Récupérer le pays
         try:
-                country_div = driver.find_element(By.XPATH, "//h2[text()='Country']/following-sibling::p/a[1]")
-                country_text = country_div.text.strip()
+            country_div = driver.find_element(By.XPATH, "//h2[text()='Country']/following-sibling::p/a[1]")
+            country_text = country_div.text.strip()
         except Exception as e:
-                print(f"Erreur lors de la récupération du pays pour '{journal_name}': {e}")
-                country_text = "N/A"
+            print(f"Erreur lors de la récupération du pays pour '{journal_name}': {e}")
+            country_text = "N/A"
 
         # Créer un dictionnaire pour le journal
         journal_data = {
@@ -93,25 +101,29 @@ def scrape_journal_data(journal_name):
 
         # Ajouter le journal à la liste globale
         all_journal_data.append(journal_data)
+        processed_journals.add(journal_name)  # Ajouter le journal à la liste des traités
         print(f"Données pour '{journal_name}' ajoutées.")
     except Exception as e:
         print(f"Erreur lors du scraping des données pour '{journal_name}': {e}")
 
 # Boucle à travers chaque article et scraper les données
 for article in articles:
-    journal_name = article['Details']['Published In']
-    print(f"Traitement du journal: {journal_name}")
-    scrape_journal_data(journal_name)
+    journal_name = article['journal_name']
+    if journal_name not in processed_journals:
+        print(f"Traitement du journal: {journal_name}")
+        scrape_journal_data(journal_name)
 
-    # Sauvegarder l'état après chaque journal traité
-    with open('journaux.json', 'w', encoding='utf-8') as json_file:
-        json.dump(all_journal_data, json_file, ensure_ascii=False, indent=4)
+        # Sauvegarder l'état après chaque journal traité
+        with open('./journaux_scienceDirect.json', 'w', encoding='utf-8') as json_file:
+            json.dump(all_journal_data, json_file, ensure_ascii=False, indent=4)
+    else:
+        print(f"Journal déjà traité : {journal_name}")
 
 # Exporter les données au format JSON final
-with open('journaux.json', 'w', encoding='utf-8') as json_file:
+with open('./journaux_scienceDirect.json', 'w', encoding='utf-8') as json_file:
     json.dump(all_journal_data, json_file, ensure_ascii=False, indent=4)
 
-print("Les données de tous les journaux ont été enregistrées dans 'journaux.json'.")
+print("Les données de tous les journaux ont été enregistrées dans 'journaux_scienceDirect.json'.")
 
 # Fermer le navigateur
 driver.quit()

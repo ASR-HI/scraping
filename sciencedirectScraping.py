@@ -264,9 +264,14 @@ def process_article(url):
 
     articles_data.append(article_data)
 
+try:
 # Process all collected articles
-for article_link in article_links:
-    process_article(article_link)
+    for article_link in article_links:
+        process_article(article_link)
+except Exception as e:
+    save_data(args.query)
+
+
 
 
 # Save the collected data
